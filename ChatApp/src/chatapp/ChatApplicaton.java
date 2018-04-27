@@ -10,21 +10,28 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-
+import java.io.*;  
+import java.net.*; 
 /**
  *
- * @author ahmedsalah
+ * @author ASUS
  */
-public class ChatApp extends Application {
+public class ChatApplicaton extends Application {
     
     @Override
     public void start(Stage stage) throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource("login.fxml"));
         
-        Scene scene = new Scene(root);
-        
-        stage.setScene(scene);
-        stage.show();
+       try{      
+Socket s=new Socket("localhost",3001);  
+DataOutputStream dout=new DataOutputStream(s.getOutputStream());  
+dout.writeUTF("Hello Server");  
+dout.flush();  
+dout.close();  
+s.close();  
+
+}catch(Exception e){System.out.println(e);
+}  
     }
 
     /**
