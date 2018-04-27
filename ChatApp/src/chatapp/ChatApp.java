@@ -3,22 +3,36 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package chatapp;
+package chatapplicaton;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-
+import java.io.*;  
+import java.net.*; 
 /**
  *
- * @author ahmedsalah
+ * @author ASUS
  */
-public class ChatApp extends Application {
+public class ChatApplicaton extends Application {
     
     @Override
     public void start(Stage stage) throws Exception {
+        
+       try{      
+Socket s=new Socket("localhost",3001);  
+DataOutputStream dout=new DataOutputStream(s.getOutputStream());  
+dout.writeUTF("Hello Server");  
+dout.flush();  
+dout.close();  
+s.close();  
+
+}catch(Exception e){System.out.println(e);
+}  
+  
+
         Parent root = FXMLLoader.load(getClass().getResource("FXMLDocument.fxml"));
         
         Scene scene = new Scene(root);
