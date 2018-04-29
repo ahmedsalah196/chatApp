@@ -10,20 +10,13 @@ import java.net.ServerSocket;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import java.util.*;
-/*
- * A chat server that delivers public and private messages.
- */
- 
+
 public class ChatServer extends Application
 {
     ArrayList<connection> online;
     ArrayList<user> allusers;
     @Override
     public void start(Stage stage) throws Exception {
-        
-         
-
-    
         ServerSocket serverSocket = null;
         Socket socket = null;
 

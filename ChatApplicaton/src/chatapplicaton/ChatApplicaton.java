@@ -35,15 +35,15 @@ System.out.println("DONE ATTEMPT");
          
         
         FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(getClass().getResource("FXMLDocument.fxml"));
+        loader.setLocation(getClass().getResource("login.fxml"));
         
         try {loader.load();} catch(Exception e) {
            e.printStackTrace();
           }
         
-        FXMLDocumentController fxdc = loader.getController();
-        fxdc.s = so;
-        fxdc.dout = dout;
+        LoginController logc = loader.getController();
+        logc.s = so;
+        logc.dout = dout;
        
        
                 
