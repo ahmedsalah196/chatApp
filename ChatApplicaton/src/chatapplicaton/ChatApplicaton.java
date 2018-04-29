@@ -26,7 +26,7 @@ public class ChatApplicaton extends Application {
          try{
            
 System.out.println("GONNA TRY");
-so = new Socket("192.168.1.6",3001); 
+so = new Socket("localhost",3001); 
 
 dout=new DataOutputStream(so.getOutputStream());
 System.out.println("DONE ATTEMPT");
@@ -54,12 +54,6 @@ System.out.println("DONE ATTEMPT");
         stage.setScene(scene1);
         stage.show();
         stage.setResizable(false);
-
-        
-        
-       
- 
-
 }
     public static void main(String[] args) {
         launch(args);
