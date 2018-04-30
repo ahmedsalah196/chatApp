@@ -27,7 +27,6 @@ public class ChatApplicaton extends Application {
            
 System.out.println("GONNA TRY");
 so = new Socket("localhost",3001); 
-
 dout=new DataOutputStream(so.getOutputStream());
 System.out.println("DONE ATTEMPT");
          }catch(Exception ex){
