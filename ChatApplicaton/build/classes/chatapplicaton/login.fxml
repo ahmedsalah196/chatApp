@@ -9,8 +9,8 @@
 <AnchorPane id="AnchorPane" prefHeight="496.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.65" fx:controller="chatapplicaton.LoginController">
    <children>
       <JFXTextField fx:id="username" layoutX="227.0" layoutY="167.0" promptText="Username" />
+      <JFXPasswordField fx:id="password" layoutX="227.0" layoutY="224.0" promptText="Password" />
       <JFXButton buttonType="RAISED" layoutX="188.0" layoutY="304.0" onAction="#signin" prefHeight="27.0" prefWidth="108.0" ripplerFill="#184ec3" style="-fx-background-color: #4bdad7;" text="Sign in" textFill="#900490" />
       <JFXButton buttonType="RAISED" layoutX="330.0" layoutY="304.0" onAction="#signup" prefHeight="27.0" prefWidth="108.0" ripplerFill="#1e1c1c" style="-fx-background-color: #900490;" text="Sign up" textFill="#b4c6c5" />
-      <JFXPasswordField fx:id="password" layoutX="227.0" layoutY="224.0" promptText="Password" />
    </children>
 </AnchorPane>
