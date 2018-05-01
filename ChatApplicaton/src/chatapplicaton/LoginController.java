@@ -17,7 +17,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 
 /**
  * FXML Controller class
@@ -38,7 +43,19 @@ public class LoginController implements Initializable {
 
     @FXML
     private JFXPasswordField password;
-
+private void show(ActionEvent e){
+    Parent techRoot;
+        try {
+            techRoot = FXMLLoader.load(getClass().getResource("lobby.fxml"));
+            Scene techScene = new Scene(techRoot);
+            Stage techStage=(Stage)((Node)e.getSource()).getScene().getWindow();
+        techStage.setScene(techScene);
+        techStage.show();
+        } catch (IOException ex) {
+            Logger.getLogger(LoginController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+}
     @FXML
     void signin(ActionEvent event) {
         try {
@@ -46,13 +63,17 @@ public class LoginController implements Initializable {
         } catch (IOException ex) {
             Logger.getLogger(LoginController.class.getName()).log(Level.SEVERE, null, ex);
         }
+
         
         try{
             String message = din.readUTF();
             System.out.println(message);
-            
+                    if(message.equals("valid signin"))
+                        show(event);
             }catch(Exception e){e.printStackTrace();}
         
+
+
     }
 
     @FXML
@@ -62,11 +83,13 @@ public class LoginController implements Initializable {
         } catch (IOException ex) {
             Logger.getLogger(LoginController.class.getName()).log(Level.SEVERE, null, ex);
         }
+
         
          try{
             String message = din.readUTF();
             System.out.println("S"+message);
-            
+            if(message.equals("Svalid signup"))
+                        show(event);
             }catch(Exception e){e.printStackTrace();}
     }
 
