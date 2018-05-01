@@ -13,8 +13,8 @@ import java.util.*;
 
 public class ChatServer extends Application
 {
-    static ArrayList<connection> online;
-    static ArrayList<user> allusers;
+    static ArrayList<connection> online = new  ArrayList<connection>() ;
+    static ArrayList<user> allusers = new ArrayList<user> ();
     @Override
     public void start(Stage stage) throws Exception {
         ServerSocket serverSocket = null;

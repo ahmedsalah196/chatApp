@@ -26,19 +26,19 @@ public class EchoThread extends Thread {
         this.socket = clientSocket;
     }
 private boolean signin(String[] tokens){
+  boolean ret=false;
     for(user u:ChatServer.allusers){
         if(u.username.equals(tokens[1]))
             if(u.password.equals(tokens[2]))
-                break;
-            else return false;
+                ret=true;
     }
     for(connection c: ChatServer.online){
         if(c.username.equals(tokens[1])){
             c.s=socket;
         }
     }
-    save();
-    return true;
+  //  save();
+    return ret;
 }
 private boolean signup(String[] tokens){
     for(user u:ChatServer.allusers){
@@ -47,7 +47,7 @@ private boolean signup(String[] tokens){
     }
     ChatServer.allusers.add(new user(tokens[1],tokens[2]));
     ChatServer.online.add(new connection(socket,tokens[1]));
-    save();
+    //save();
     return true;
 }
 private void save(){
@@ -79,24 +79,62 @@ private void save(){
                dtotpt = new DataOutputStream(this.socket.getOutputStream());  
             }
             catch(Exception e){return;}
-            while(!msgin.equals("exit"))  
-            {  
-                try{
-                msgin =dtinpt.readUTF();  
+           
+               
+           
                // txtbxarea.setText(txtbxarea.getText().trim()+"\n Client:"+msgin);
-               String[] tokens = msgin.split(",");
-               if (tokens[0].equals("signin")) 
-                   while(!signin(tokens)){
-                   
-                   }
-               System.out.println(msgin);
-            } catch(Exception ex) {};
             
+        try{
+            
+            while(true)
+            {
+                msgin = dtinpt.readUTF();
+       
+                String[] tokens = msgin.split(",");
+               
                 
-            
-          
-            }   
+              if(tokens[0].equals("signin") ){
+           
+                   
+                        if(!signin(tokens)){
+                       
+                         System.out.println("SENDING INVALID TO CLIENT");
+                         
+                          dtotpt.writeUTF("invalid signin");
+                        }
+                        else {
+                           dtotpt.writeUTF("valid signin");
+                        }
+                }
+              
+              
+              else if(tokens[0].equals("signup"))
+              {
+                  
+                   if(!signup(tokens)){
+                       
+                         System.out.println("SENDING INVALID TO CLIENT");
+                         
+                          dtotpt.writeUTF("invalid signup");
+                        }
+                        else {
+                           dtotpt.writeUTF("valid signup");
+                        }
+                         
+              }
+              
+              
+                    
+            }}catch(Exception e){e.printStackTrace();};
+                              //msgin=dtinput.readUTF();
         }
     
+   
+            
+                
+    
 }
+          
+            
+
     

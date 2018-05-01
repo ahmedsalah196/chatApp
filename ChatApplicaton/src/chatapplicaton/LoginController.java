@@ -7,6 +7,7 @@ package chatapplicaton;
 
 import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
+import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
@@ -27,6 +28,7 @@ public class LoginController implements Initializable {
 
     Socket s;
     DataOutputStream dout = null;
+    DataInputStream din = null;
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
@@ -44,6 +46,13 @@ public class LoginController implements Initializable {
         } catch (IOException ex) {
             Logger.getLogger(LoginController.class.getName()).log(Level.SEVERE, null, ex);
         }
+        
+        try{
+            String message = din.readUTF();
+            System.out.println(message);
+            
+            }catch(Exception e){e.printStackTrace();}
+        
     }
 
     @FXML
@@ -53,6 +62,12 @@ public class LoginController implements Initializable {
         } catch (IOException ex) {
             Logger.getLogger(LoginController.class.getName()).log(Level.SEVERE, null, ex);
         }
+        
+         try{
+            String message = din.readUTF();
+            System.out.println("S"+message);
+            
+            }catch(Exception e){e.printStackTrace();}
     }
 
 }

@@ -5,6 +5,7 @@
  */
 package chatapplicaton;
 
+import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.net.Socket;
 import javafx.application.Application;
@@ -23,12 +24,18 @@ public class ChatApplicaton extends Application {
     public void start(Stage stage) throws Exception {
         Socket so = null;
         DataOutputStream dout = null;
+        DataInputStream din = null;
          try{
            
 System.out.println("GONNA TRY");
 so = new Socket("localhost",3001); 
-dout=new DataOutputStream(so.getOutputStream());
-System.out.println("DONE ATTEMPT");
+dout= new DataOutputStream(so.getOutputStream());
+din = new DataInputStream(so.getInputStream());
+
+
+
+
+
          }catch(Exception ex){
          ex.printStackTrace();};
          
@@ -43,6 +50,7 @@ System.out.println("DONE ATTEMPT");
         LoginController logc = loader.getController();
         logc.s = so;
         logc.dout = dout;
+        logc.din = din;
        
        
                 
@@ -52,7 +60,11 @@ System.out.println("DONE ATTEMPT");
         
         stage.setScene(scene1);
         stage.show();
+        
+        
         stage.setResizable(false);
+        
+         
 }
     public static void main(String[] args) {
         launch(args);
