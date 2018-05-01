@@ -14,11 +14,15 @@ import java.util.*;
 public class ChatServer extends Application
 {
     ArrayList<connection> online;
-    ArrayList<user> allusers;
+    ArrayList<user> allusers;  
+    public static ArrayList<chatRoom> chatRoomsAvailable;
+    
     @Override
     public void start(Stage stage) throws Exception {
         ServerSocket serverSocket = null;
         Socket socket = null;
+        
+        chatRoomsAvailable = new ArrayList<chatRoom>();
 
         try {
             serverSocket = new ServerSocket(3001);
@@ -29,10 +33,11 @@ public class ChatServer extends Application
         while (true) {
             try {
                 System.out.println("LISTENING");
-                System.out.println(InetAddress.getLocalHost());
+//                System.out.println(InetAddress.getLocalHost());
                 socket = serverSocket.accept();
                 System.out.println("DONE");
-            } catch (IOException e) {
+            } 
+            catch (IOException e) {
                 System.out.println("I/O error: " + e);
             }
             // new thread for a client

@@ -13,5 +13,6 @@ public class connection {
     public connection(Socket s, String username) {
         this.s = s;
         this.username = username;
+        
     }
 }

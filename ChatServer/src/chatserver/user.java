@@ -15,5 +15,5 @@ public class user {
         if(password.startsWith("adm"))adm=true;
         else adm=false;
     }
-   
+    
 }
