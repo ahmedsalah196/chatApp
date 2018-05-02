@@ -1,0 +1,27 @@
+.jfx-snackbar-content{
+    -fx-background-color: #4059a9;
+}
+.jfx-snackbar-toast{
+    -fx-text-fill:#d3cd55;
+}
+.jfx-snackbar-action{
+    -fx-text-fill: #e63e3e;
+}
+.jfx-list-cell:selected{
+        -fx-background-color: #3d8c91;
+}
+.jfx-list-cell:hover{
+        -fx-background-color: #1bd79c;
+}
+.jfx-list-cell{
+        -fx-background-insets: 0.0;
+}
+.jfx-list-cell .jfx-rippler{
+    -fx-background-rippler:BLUE;
+}
+.jfx-list-view{
+    -fx-background-insets:0;
+    -fx-cell-vertical-margin:10.0;
+    -fx-vertical-gap:10;
+    -fx-pref-width:150;
+}

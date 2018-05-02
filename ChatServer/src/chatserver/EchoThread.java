@@ -33,12 +33,13 @@ public class EchoThread extends Thread {
                 if (u.password.equals(tokens[2]))
                     ret = true;
         }
-        for (connection c: ChatServer.online) {
-            if (c.username.equals(tokens[1])) {
-                c.s = socket;
+        for (user u: ChatServer.online) {
+            if (u.username.equals(tokens[1])) {
+                ChatServer.online.remove(u);
             }
         }
-        //save();
+        ChatServer.online.add(new user(tokens[1],tokens[2],tokens[3],socket.getInetAddress().getHostAddress()));
+        save();
         return ret;
     }
     private boolean signup(String[] tokens) {
@@ -46,23 +47,19 @@ public class EchoThread extends Thread {
             if (u.username.equals(tokens[1]))
                 return false;
         }
-        ChatServer.allusers.add(new user(tokens[1], tokens[2]));
-        ChatServer.online.add(new connection(socket, tokens[1]));
-        //save();
+        user u =new user(tokens[1],tokens[2],socket.getInetAddress().getHostAddress());
+        System.out.println(socket.getInetAddress().getHostAddress());
+        ChatServer.allusers.add(u);
+        save();
         return true;
     }
     private void save() {
         Gson gson = new Gson();
         Type type = new TypeToken < ArrayList < user >> () {}.getType();
         String json = gson.toJson(ChatServer.allusers, type);
-        Gson gson2 = new Gson();
-        Type type2 = new TypeToken < ArrayList < connection >> () {}.getType();
-        String json2 = gson2.toJson(ChatServer.online, type2);
         try {
             FileWriter fw = new FileWriter("users.json");
             fw.write(json);
-            fw = new FileWriter("connections.json");
-            fw.write(json2);
             fw.close();
         } catch (Exception e) {
             e.getMessage();
@@ -70,7 +67,6 @@ public class EchoThread extends Thread {
     }
     public void run() {
 
-        String line;
         DataInputStream dtinpt = null;
         DataOutputStream dtotpt = null;
         String msgin = "";
@@ -116,7 +112,33 @@ public class EchoThread extends Thread {
                     }
 
                 }
-
+                else if(tokens[0].equals("close")){
+                    for(user u:ChatServer.online)
+                        if(tokens[1].equals(u.username))
+                        {
+                            System.out.println(ChatServer.online);
+                            ChatServer.online.remove(u);
+                            System.out.println(ChatServer.online);
+                            break;
+                        }
+                }
+                else if (tokens[0].equals("request statuses")){
+                    String ret="";
+                    for(user u:ChatServer.allusers){
+                        boolean on=false;
+                        for(user u2:ChatServer.online)
+                            if(u2.username.equals(u.username))
+                                on=true;
+                        if(!on){
+                            u.status="offline";
+                        }
+                        ret+=u.username+" - "+u.status+",";
+                    }
+                    ret = ret.substring(0, ret.length() - 1);
+                    System.out.println(ret);
+                    dtotpt.writeUTF(ret);
+                }
+                  
 
 
             }
@@ -125,7 +147,7 @@ public class EchoThread extends Thread {
         };
         //msgin=dtinput.readUTF();
     }
-    public void processWord(String recieved) {
+    /*public void processWord(String recieved) {
         //message schema 
         // create room : create@username
         // join room : join@roomNumber@username
@@ -160,6 +182,6 @@ public class EchoThread extends Thread {
             }
         }
 
-    }
+    }*/
 
 }
