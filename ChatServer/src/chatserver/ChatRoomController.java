@@ -5,9 +5,16 @@
  */
 package chatserver;
 
+import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXListView;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.net.Socket;
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Label;
 
 /**
  * FXML Controller class
@@ -16,12 +23,20 @@ import javafx.fxml.Initializable;
  */
 public class ChatRoomController implements Initializable {
 
-    /**
-     * Initializes the controller class.
-     */
+    Socket s;
+    DataOutputStream dout = null;
+    DataInputStream din = null;
+    int id;
+    @FXML
+    private Label name;
+    @FXML
+    private JFXListView<String> members;
+    @FXML
+    private JFXListView<JFXButton> kick;
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
-    }    
+    } 
+    
     
 }

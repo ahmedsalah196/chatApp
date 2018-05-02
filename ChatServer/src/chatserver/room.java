@@ -5,10 +5,21 @@
  */
 package chatserver;
 
+import com.jfoenix.controls.JFXListView;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.net.Socket;
+import java.util.ArrayList;
+import javafx.fxml.FXML;
+import javafx.scene.control.Label;
+
 /**
  *
  * @author ahmedsalah
  */
 public class room {
+    String rname;
+    ArrayList<user> inroom;
+
     
 }

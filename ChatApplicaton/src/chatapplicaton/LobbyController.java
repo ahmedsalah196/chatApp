@@ -43,18 +43,19 @@ class polling implements Runnable{
 
         while(true)
         try {
-            Thread.sleep(3000);
             dout.writeUTF("request statuses");
             String[] statuses=din.readUTF().split(",");
             ObservableList<String> stats=FXCollections.observableArrayList(statuses);
             System.out.println(statuses);
             System.out.println(stats);
-            for(String s:stats){
-                if ( s.startsWith(username)){
-                    stats.remove(s);
+            for(String str:stats){
+                if ( str.startsWith(username)){
+                    stats.remove(str);
+                    break;
                 }
             }
             lc.fillusers(stats);
+            Thread.sleep(2000);
         } catch (Exception ex) {
             Logger.getLogger(polling.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -84,6 +85,7 @@ public class LobbyController implements Initializable {
     }   
     public void fillusers(ObservableList<String> usr){
         users.setItems(usr);
+        users.refresh();
     }
 
 }

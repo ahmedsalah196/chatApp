@@ -99,6 +99,7 @@ public class EchoThread extends Thread {
                         dtotpt.writeUTF("invalid signin");
                     } else {
                         dtotpt.writeUTF("valid signin");
+                        
                     }
                 } else if (tokens[0].equals("signup")) {
 
@@ -116,9 +117,8 @@ public class EchoThread extends Thread {
                     for(user u:ChatServer.online)
                         if(tokens[1].equals(u.username))
                         {
-                            System.out.println(ChatServer.online);
+                            System.out.println("Closing"+u.username);
                             ChatServer.online.remove(u);
-                            System.out.println(ChatServer.online);
                             break;
                         }
                 }
@@ -127,8 +127,10 @@ public class EchoThread extends Thread {
                     for(user u:ChatServer.allusers){
                         boolean on=false;
                         for(user u2:ChatServer.online)
-                            if(u2.username.equals(u.username))
+                            if(u2.username.equals(u.username)){
                                 on=true;
+                                u.status=u2.status;
+                            }
                         if(!on){
                             u.status="offline";
                         }

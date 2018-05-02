@@ -23,7 +23,7 @@ public class user {
         this.ip = ip;
         if(password.startsWith("adm"))adm=true;
         else adm=false;
-        status="Available.png";
+        status="Online";
     }
     
     

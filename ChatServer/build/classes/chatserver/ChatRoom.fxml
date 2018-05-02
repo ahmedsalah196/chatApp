@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXListView?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+
+
+<AnchorPane id="AnchorPane" prefHeight="624.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.65" fx:controller="chatserver.ChatRoomController">
+   <children>
+      <Label fx:id="name" prefHeight="65.0" prefWidth="296.0" style="-fx-background-color: #299ed0;" />
+      <JFXListView fx:id="members" layoutY="65.0" prefHeight="559.0" prefWidth="207.0" />
+      <JFXListView fx:id="kick" layoutX="207.0" layoutY="65.0" prefHeight="559.0" prefWidth="88.0" />
+   </children>
+</AnchorPane>
