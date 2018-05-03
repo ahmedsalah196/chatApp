@@ -67,6 +67,38 @@ class polling implements Runnable{
     }
     
 }
+class Grouppolling implements Runnable{
+
+    static Socket s;
+    static DataOutputStream dout = null;
+    static DataInputStream din = null;
+    String username;
+    ChatRoomController lc;
+    public Grouppolling(Socket s,DataOutputStream dout,DataInputStream din,String username,ChatRoomController lc) {
+       this.s=s;
+       this.dout=dout;
+       this.din=din;
+       this.username = username;
+       this.lc=lc;
+    }
+
+    
+    @Override
+    public void run() {
+
+        while(true)
+        try {
+            dout.writeUTF("room,request"+","+lc.id+","+username);
+            String message=din.readUTF();
+            String[] users=din.readUTF().split(",");
+            lc.fill(message, FXCollections.observableArrayList(users));
+            //Thread.sleep(2000);
+        } catch (Exception ex) {
+            Logger.getLogger(polling.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+}
 public class LobbyController implements Initializable {
 
     String username;
@@ -89,6 +121,32 @@ public class LobbyController implements Initializable {
         }
     }
 }));
+        groups.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+            try {
+                dout.writeUTF("room,add,"+groups.getSelectionModel().getSelectedIndex()+","+username);
+                if(din.readUTF().equals("valid")){
+                    Stage stage=new Stage();
+                    FXMLLoader loader = new FXMLLoader();
+                    loader.setLocation(getClass().getResource("ChatRoom.fxml"));
+                    try {loader.load();} catch(Exception e) {
+                       e.printStackTrace();
+                      }
+                    ChatRoomController logc = loader.getController();
+                    logc.id=groups.getItems().size();
+                    logc.name.setText(newSelection);
+                    logc.user=username;
+                    Grouppolling gp=new Grouppolling(s, dout, din, username, logc);
+                    Thread t=new Thread(gp);
+                    t.start();
+                    Parent root = loader.getRoot();
+                    Scene scene1 = new Scene(root);
+                    stage.setScene(scene1);
+                    stage.show();
+                }
+            } catch (Exception ex) {
+                Logger.getLogger(LobbyController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+});
     }   
     public void fillusers(ObservableList<String> usr,ObservableList<String> grps){
         groups.setItems(grps);
@@ -105,7 +163,7 @@ public class LobbyController implements Initializable {
            e.printStackTrace();
           }
         GroupnameController logc = loader.getController();
-        logc.lc=this;
+        logc.lc=this;      
         Parent root = loader.getRoot();
         Scene scene1 = new Scene(root);
         stage.setScene(scene1);
@@ -120,11 +178,19 @@ public class LobbyController implements Initializable {
         Stage stage=new Stage();
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getResource("ChatRoom.fxml"));
-        try {loader.load();} catch(Exception e) {
+        try {
+            loader.load();
+        } catch(Exception e) {
            e.printStackTrace();
-          }
+        }
         ChatRoomController logc = loader.getController();
         logc.admin=this.username;
+        logc.id=groups.getItems().size();
+        logc.name.setText(name);
+        logc.user=username;
+        Grouppolling gp=new Grouppolling(s, dout, din, username, logc);
+        Thread t=new Thread(gp);
+        t.start();
         Parent root = loader.getRoot();
         Scene scene1 = new Scene(root);
         stage.setScene(scene1);

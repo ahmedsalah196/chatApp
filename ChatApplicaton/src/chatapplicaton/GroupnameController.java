@@ -30,9 +30,9 @@ public class GroupnameController implements Initializable {
     }    
     @FXML
     void create(ActionEvent e) {
+        lc.newRoom(name.getText());
         Node  source = (Node)  e.getSource(); 
         Stage stage1  = (Stage) source.getScene().getWindow();
         stage1.close();
-        lc.newRoom(name.getText());
     }
 }

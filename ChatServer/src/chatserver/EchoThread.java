@@ -46,12 +46,13 @@ public class EchoThread extends Thread {
         user u=new user(tokens[1],tokens[2],tokens[3],socket.getInetAddress().getHostAddress());
         if(socket.getInetAddress().getHostAddress().equals("127.0.0.1")||socket.getInetAddress().getHostAddress().equals("localhost"))
             try {
-                u.ip=InetAddress.getLocalHost().toString().substring(u.ip.lastIndexOf('/'));
+                u.ip=InetAddress.getLocalHost().toString().substring(InetAddress.getLocalHost().toString().lastIndexOf('/')+1);
         } catch (UnknownHostException ex) {
             Logger.getLogger(EchoThread.class.getName()).log(Level.SEVERE, null, ex);
         }
+System.out.println(u.ip);
+
         ChatServer.online.add(u);
-        save();
         return ret;
     }
     private boolean signup(String[] tokens) {
@@ -62,20 +63,7 @@ public class EchoThread extends Thread {
         user u =new user(tokens[1],tokens[2],socket.getInetAddress().getHostAddress());
         System.out.println(socket.getInetAddress().getHostAddress());
         ChatServer.allusers.add(u);
-        save();
         return true;
-    }
-    private void save() {
-        Gson gson = new Gson();
-        Type type = new TypeToken < ArrayList < user >> () {}.getType();
-        String json = gson.toJson(ChatServer.allusers, type);
-        try {
-            FileWriter fw = new FileWriter("users.json");
-            fw.write(json);
-            fw.close();
-        } catch (Exception e) {
-            e.getMessage();
-        }
     }
     public void run() {
 
@@ -170,6 +158,9 @@ public class EchoThread extends Thread {
                                 if(!cr.addToRoom(tokens[3])){
                                     dtotpt.writeUTF("blocked");
                                 }
+                                else{
+                                    dtotpt.writeUTF("valid");
+                                }
                             }
                                 
                         }
@@ -185,13 +176,25 @@ public class EchoThread extends Thread {
                                 cr.sendMsgToAll(tokens[3]);
                     }
                     else if (tokens[1].equals("request")){
-                        String ret="";
+                        String ret="",ret2="";
                         for(chatRoom cr:ChatServer.rooms)
-                            if(Integer.parseInt(tokens[2])==cr.roomNumberTotake)
+                            if(Integer.parseInt(tokens[2])==cr.roomNumberTotake){
                                 for(String m:cr.messages)
                                     ret+=m+"\n";
+                                for(user u:cr.clientsInRoom){
+                                    ret2+=u.username+",";
+                                }
+                            }
                         dtotpt.writeUTF(ret);
+                        ret2 = ret2.substring(0, ret2.length() - 1);
+                        dtotpt.writeUTF(ret2);
                     }
+                     else if(tokens[1].equals("remove")){
+                        for(chatRoom cr:ChatServer.rooms)
+                            if(Integer.parseInt(tokens[2])==cr.roomNumberTotake)
+                                cr.remove(tokens[3]);
+                     }
+                    
                 }
 
 
@@ -200,5 +203,4 @@ public class EchoThread extends Thread {
             e.printStackTrace();
         };
     }
-
 }

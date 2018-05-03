@@ -7,11 +7,17 @@ package chatapplicaton;
 
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXListView;
+import com.jfoenix.controls.JFXTextArea;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.IOException;
 import java.net.Socket;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
@@ -26,17 +32,45 @@ public class ChatRoomController implements Initializable {
     Socket s;
     DataOutputStream dout = null;
     DataInputStream din = null;
+    String admin,user;
     int id;
     @FXML
-    private Label name;
+    public Label name;
     @FXML
     private JFXListView<String> members;
     @FXML
     private JFXListView<JFXButton> kick;
+    @FXML
+    private JFXTextArea history;
+
+    @FXML
+    private JFXTextArea message;
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
+        Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+    public void run() {
+        try{
+            dout.writeUTF("room,remove,"+id+","+user);
+        }
+        catch(Exception e){
+            System.out.println(e.toString());
+        }
+    }
+}));
     } 
     
-    
+    public void fill(String hstry,ObservableList<String> users){
+        members.setItems(users);
+        members.refresh();
+        history.setText(hstry);
+    }
+    @FXML
+    void send(ActionEvent event) {
+        try {
+            dout.writeUTF("room,send,"+id+","+message.getText());
+        } catch (IOException ex) {
+            Logger.getLogger(ChatRoomController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 }

@@ -89,6 +89,14 @@ public class chatRoom {
             }
         }
     }
+    public void remove(String username){
+        for (int i = 0; i < this.clientsInRoom.size(); i++) {
+            if (this.clientsInRoom.get(i).username.equalsIgnoreCase(username)) {
+                this.clientsInRoom.remove(i);
+                break;
+            }
+        }
+    }
     /*
         kick any user by remove him from the arrayList
         DISCLAIMER : must be used by the room admin only
