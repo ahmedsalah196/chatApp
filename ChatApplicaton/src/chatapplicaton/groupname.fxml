@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import javafx.scene.layout.AnchorPane?>
+
+
+<AnchorPane id="AnchorPane" prefHeight="182.0" prefWidth="432.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.65" fx:controller="chatapplicaton.GroupnameController">
+   <children>
+      <JFXButton buttonType="RAISED" layoutX="309.0" layoutY="116.0" onAction="#create" style="-fx-background-color: #5332e7;" text="Create" textFill="WHITE" />
+      <JFXTextField fx:id="name" layoutX="33.0" layoutY="48.0" maxWidth="348.0" minWidth="348.0" prefHeight="33.0" prefWidth="348.0" promptText="Group name" />
+   </children>
+</AnchorPane>

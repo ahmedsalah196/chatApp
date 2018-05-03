@@ -17,6 +17,11 @@ import java.io.InputStreamReader;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.lang.reflect.Type;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.nio.channels.Channels;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class EchoThread extends Thread {
 
@@ -38,8 +43,21 @@ public class EchoThread extends Thread {
                 ChatServer.online.remove(u);
             }
         }
+<<<<<<< HEAD
         ChatServer.online.add(new user(tokens[1],tokens[2],tokens[3],socket.getInetAddress().getHostAddress()));
      //   save();
+=======
+        user u=new user(tokens[1],tokens[2],tokens[3],socket.getInetAddress().getHostAddress());
+        if(socket.getInetAddress().getHostAddress().equals("127.0.0.1")||socket.getInetAddress().getHostAddress().equals("localhost"))
+            try {
+                u.ip=InetAddress.getLocalHost().toString().substring(InetAddress.getLocalHost().toString().lastIndexOf('/')+1);
+        } catch (UnknownHostException ex) {
+            Logger.getLogger(EchoThread.class.getName()).log(Level.SEVERE, null, ex);
+        }
+System.out.println(u.ip);
+
+        ChatServer.online.add(u);
+>>>>>>> 4d514bd7d6adcba326a0a876a2034610ecf66687
         return ret;
     }
     private boolean signup(String[] tokens) {
@@ -50,20 +68,11 @@ public class EchoThread extends Thread {
         user u =new user(tokens[1],tokens[2],socket.getInetAddress().getHostAddress());
         System.out.println(socket.getInetAddress().getHostAddress());
         ChatServer.allusers.add(u);
+<<<<<<< HEAD
        // save();
+=======
+>>>>>>> 4d514bd7d6adcba326a0a876a2034610ecf66687
         return true;
-    }
-    private void save() {
-        Gson gson = new Gson();
-        Type type = new TypeToken < ArrayList < user >> () {}.getType();
-        String json = gson.toJson(ChatServer.allusers, type);
-        try {
-            FileWriter fw = new FileWriter("users.json");
-            fw.write(json);
-            fw.close();
-        } catch (Exception e) {
-            e.getMessage();
-        }
     }
     public void run() {
 
@@ -135,55 +144,72 @@ public class EchoThread extends Thread {
                             u.status="offline";
                         }
                         ret+=u.username+" - "+u.status+",";
+                        
                     }
                     ret = ret.substring(0, ret.length() - 1);
                     System.out.println(ret);
                     dtotpt.writeUTF(ret);
+                    ret="";
+                    for(chatRoom cr:ChatServer.rooms){
+                        ret+=cr.roomName+",";
+                    }
+                    ret = ret.substring(0, ret.length() - 1);
+                    dtotpt.writeUTF(ret);    
                 }
-                  
+                else if(tokens[0].equals("room")){
+                    if(tokens[1].equals("create")){
+                        chatRoom cr=new chatRoom(tokens[2], tokens[3]);
+                        ChatServer.rooms.add(cr);
+                    }
+                    else if(tokens[1].equals("add")){
+                        for(chatRoom cr:ChatServer.rooms){
+                            if(Integer.parseInt(tokens[2])==cr.roomNumberTotake){
+                                if(!cr.addToRoom(tokens[3])){
+                                    dtotpt.writeUTF("blocked");
+                                }
+                                else{
+                                    dtotpt.writeUTF("valid");
+                                }
+                            }
+                                
+                        }
+                    }
+                    else if(tokens[1].equals("kick")){
+                        for(chatRoom cr:ChatServer.rooms)
+                            if(Integer.parseInt(tokens[2])==cr.roomNumberTotake)
+                                cr.kickAclient(tokens[3]);
+                    }
+                    else if(tokens[1].equals("send")){
+                        for(chatRoom cr:ChatServer.rooms)
+                            if(Integer.parseInt(tokens[2])==cr.roomNumberTotake)
+                                cr.sendMsgToAll(tokens[3]);
+                    }
+                    else if (tokens[1].equals("request")){
+                        String ret="",ret2="";
+                        for(chatRoom cr:ChatServer.rooms)
+                            if(Integer.parseInt(tokens[2])==cr.roomNumberTotake){
+                                for(String m:cr.messages)
+                                    ret+=m+"\n";
+                                for(user u:cr.clientsInRoom){
+                                    ret2+=u.username+",";
+                                }
+                            }
+                        dtotpt.writeUTF(ret);
+                        ret2 = ret2.substring(0, ret2.length() - 1);
+                        dtotpt.writeUTF(ret2);
+                    }
+                     else if(tokens[1].equals("remove")){
+                        for(chatRoom cr:ChatServer.rooms)
+                            if(Integer.parseInt(tokens[2])==cr.roomNumberTotake)
+                                cr.remove(tokens[3]);
+                     }
+                    
+                }
 
 
             }
         } catch (Exception e) {
             e.printStackTrace();
         };
-        //msgin=dtinput.readUTF();
     }
-    /*public void processWord(String recieved) {
-        //message schema 
-        // create room : create@username
-        // join room : join@roomNumber@username
-        // normal msg : normal@roomNumber@username@msg
-        String[] s = recieved.split("@");
-
-        if (s[0].equalsIgnoreCase("create")) {
-            chatRoom tmp = chatRoom.createChatRoom(this.socket, s[1]);
-            ChatServer.chatRoomsAvailable.add(tmp);
-        } else if (s[0].equalsIgnoreCase("join")) {
-            for (int i = 0; i < ChatServer.chatRoomsAvailable.size(); i++) {
-                chatRoom tmp = ChatServer.chatRoomsAvailable.get(i);
-                if (tmp.currentRoomNum == Integer.parseInt(s[1])) {
-                    tmp.addToRoom(this.socket, s[2]);
-                    break;
-                }
-            }
-        } else {
-            for (int i = 0; i < ChatServer.chatRoomsAvailable.size(); i++) {
-                chatRoom tmp = ChatServer.chatRoomsAvailable.get(i);
-                if (tmp.currentRoomNum == Integer.parseInt(s[1])) {
-                    //mwgood w hkml 3ady
-                    for (int j = 0; j < tmp.clientsInRoom.size(); j++) {
-                        connection tmp2 = tmp.clientsInRoom.get(j);
-                        if (tmp2.username.equalsIgnoreCase(s[2])) {
-                            tmp.sendMsgToAll(s[3]);
-                            System.out.println(tmp.toString());
-                            break;
-                        }
-                    }
-                }
-            }
-        }
-
-    }*/
-
 }

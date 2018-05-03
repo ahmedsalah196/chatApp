@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import com.jfoenix.controls.JFXButton?>
 <?import com.jfoenix.controls.JFXListView?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.image.Image?>
@@ -25,7 +26,7 @@
             <Font size="36.0" />
          </font>
       </Label>
-      <JFXListView layoutY="173.0" prefHeight="507.0" prefWidth="338.0" />
+      <JFXListView fx:id="groups" layoutY="173.0" prefHeight="507.0" prefWidth="338.0" />
       <JFXListView fx:id="users" layoutX="339.0" layoutY="173.0" prefHeight="507.0" prefWidth="350.0" />
       <Label alignment="CENTER" contentDisplay="CENTER" layoutX="-1.0" layoutY="102.0" prefHeight="71.0" prefWidth="337.0" text="Groups" textAlignment="CENTER" textFill="WHITE">
          <font>
@@ -37,5 +38,11 @@
             <Font name="System Italic" size="30.0" />
          </font>
       </Label>
+      <ImageView fitHeight="39.0" fitWidth="40.0" layoutX="281.0" layoutY="627.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../resources/plus.png" />
+         </image>
+      </ImageView>
+      <JFXButton layoutX="281.0" layoutY="627.0" onAction="#add" prefHeight="39.0" prefWidth="39.0" text=" " />
    </children>
 </AnchorPane>
