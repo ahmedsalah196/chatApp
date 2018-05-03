@@ -23,7 +23,7 @@ public class ChatServer extends Application
     
     static ArrayList<user> online = new  ArrayList<user>() ;
     static ArrayList<user> allusers = new ArrayList<user> ();
-    static ArrayList<room> rooms=new ArrayList<room> ();
+    static ArrayList<chatRoom> rooms=new ArrayList<chatRoom> ();
     @Override
     public void start(Stage stage) throws Exception {
         ServerSocket serverSocket = null;

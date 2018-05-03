@@ -14,8 +14,13 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 
 /**
  * FXML Controller class
@@ -46,15 +51,15 @@ class polling implements Runnable{
             dout.writeUTF("request statuses");
             String[] statuses=din.readUTF().split(",");
             ObservableList<String> stats=FXCollections.observableArrayList(statuses);
-            System.out.println(statuses);
-            System.out.println(stats);
+            String[] groups=din.readUTF().split(",");
+            ObservableList<String> grps=FXCollections.observableArrayList(groups);
             for(String str:stats){
                 if ( str.startsWith(username)){
                     stats.remove(str);
                     break;
                 }
             }
-            lc.fillusers(stats);
+            lc.fillusers(stats,grps);
             Thread.sleep(2000);
         } catch (Exception ex) {
             Logger.getLogger(polling.class.getName()).log(Level.SEVERE, null, ex);
@@ -68,6 +73,8 @@ public class LobbyController implements Initializable {
      Socket s;
      DataOutputStream dout = null;
      DataInputStream din = null;
+     @FXML
+    private JFXListView<String> groups;
     @FXML
     private JFXListView<String> users;
     @Override
@@ -83,9 +90,44 @@ public class LobbyController implements Initializable {
     }
 }));
     }   
-    public void fillusers(ObservableList<String> usr){
+    public void fillusers(ObservableList<String> usr,ObservableList<String> grps){
+        groups.setItems(grps);
+        groups.refresh();
         users.setItems(usr);
         users.refresh();
     }
-
+    @FXML
+    void add(ActionEvent event) {
+        Stage stage=new Stage();
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(getClass().getResource("groupname.fxml"));
+        try {loader.load();} catch(Exception e) {
+           e.printStackTrace();
+          }
+        GroupnameController logc = loader.getController();
+        logc.lc=this;
+        Parent root = loader.getRoot();
+        Scene scene1 = new Scene(root);
+        stage.setScene(scene1);
+        stage.show();
+    }
+    void newRoom(String name){
+        try {
+            dout.writeUTF("room,create,"+name+","+username);
+        } catch (IOException ex) {
+            Logger.getLogger(LobbyController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        Stage stage=new Stage();
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(getClass().getResource("ChatRoom.fxml"));
+        try {loader.load();} catch(Exception e) {
+           e.printStackTrace();
+          }
+        ChatRoomController logc = loader.getController();
+        logc.admin=this.username;
+        Parent root = loader.getRoot();
+        Scene scene1 = new Scene(root);
+        stage.setScene(scene1);
+        stage.show();
+    }
 }
