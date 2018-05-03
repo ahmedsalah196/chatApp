@@ -39,7 +39,7 @@ public class EchoThread extends Thread {
             }
         }
         ChatServer.online.add(new user(tokens[1],tokens[2],tokens[3],socket.getInetAddress().getHostAddress()));
-        save();
+     //   save();
         return ret;
     }
     private boolean signup(String[] tokens) {
@@ -50,7 +50,7 @@ public class EchoThread extends Thread {
         user u =new user(tokens[1],tokens[2],socket.getInetAddress().getHostAddress());
         System.out.println(socket.getInetAddress().getHostAddress());
         ChatServer.allusers.add(u);
-        save();
+       // save();
         return true;
     }
     private void save() {

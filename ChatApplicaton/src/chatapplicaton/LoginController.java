@@ -82,8 +82,8 @@ public class LoginController implements Initializable {
              stage.setScene(scene);
              stage.show();
              polling poll=new polling(s,dout,din,username.getText(),lc);
-             Thread thread=new Thread(poll);
-             thread.start();
+          Thread thread=new Thread(poll);
+           thread.start();
              Node  source = (Node)  e.getSource(); 
             Stage stage1  = (Stage) source.getScene().getWindow();
             stage1.close();

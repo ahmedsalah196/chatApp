@@ -130,21 +130,7 @@ public class chatRoom {
             }
         }
     }
-    /*
-        kick any user by remove him from the arrayList
-        DISCLAIMER : must be used by the room admin only
-     */
-    public void kickAclient(String IPtoRemove, String roomAdminUserName) {
-        if (roomAdminUserName.equalsIgnoreCase(this.adminUser.username)) {
-            for (int i = 0; i < this.clientsInRoom.size(); i++) {
-                if (this.clientsInRoom.get(i).ip.equalsIgnoreCase(IPtoRemove)) {
-                    this.clientsInRoom.remove(i);
-                    break;
-                }
-            }
-        }
-        
-    }
+    
 
     public String toString() {
         return "chatRoom{" + "Number of Clients=" + this.clientsInRoom.size()

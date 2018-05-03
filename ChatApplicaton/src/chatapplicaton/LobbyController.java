@@ -14,6 +14,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 
@@ -22,6 +23,8 @@ import javafx.fxml.Initializable;
  *
  * @author ahmedsalah
  */
+
+
 class polling implements Runnable{
 
     static Socket s;
@@ -37,6 +40,7 @@ class polling implements Runnable{
        this.lc=lc;
     }
 
+    
     
     @Override
     public void run() {
@@ -62,6 +66,7 @@ class polling implements Runnable{
     }
     
 }
+
 public class LobbyController implements Initializable {
 
     String username;
@@ -69,9 +74,17 @@ public class LobbyController implements Initializable {
      DataOutputStream dout = null;
      DataInputStream din = null;
     @FXML
-    private JFXListView<String> users;
+    public JFXListView <String> users;
+    
+    
+  
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        
+  
+           //newSelection is the currently selected
+           //todo
+
         Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
     public void run() {
         try{
@@ -81,8 +94,36 @@ public class LobbyController implements Initializable {
             System.out.println(e.toString());
         }
     }
+    
+    
 }));
-    }   
+        
+           
+   users.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+       
+      
+    if(newSelection!=null)
+    {
+      String[] listItem = newSelection.split("-");
+      listItem[0]=  listItem[0].trim();
+      
+    }
+     try{
+    dout.writeUTF("Get TargetUserIp");
+    String TargetUserIp = din.readUTF();
+    
+    
+    }
+    catch(Exception e)
+    {e.printStackTrace();}
+    
+   
+      
+    });
+    }
+    
+
+   
     public void fillusers(ObservableList<String> usr){
         users.setItems(usr);
         users.refresh();
