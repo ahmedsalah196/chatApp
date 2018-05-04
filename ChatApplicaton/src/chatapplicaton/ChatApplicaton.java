@@ -27,7 +27,7 @@ public class ChatApplicaton extends Application {
     public void start(Stage stage) throws Exception {
         
          try{
-           
+new ClientListeningThread().start();
 System.out.println("GONNA TRY");
 so = new Socket("localhost",3001); 
 dout= new DataOutputStream(so.getOutputStream());

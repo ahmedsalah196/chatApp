@@ -8,9 +8,8 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" prefHeight="680.0" prefWidth="682.0" style="-fx-background-color: #299ed0;" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="chatapplicaton.LobbyController">
+<AnchorPane id="AnchorPane" prefHeight="680.0" prefWidth="682.0" style="-fx-background-color: #299ed0;" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="chatapplicaton.LobbyController">
    <children>
-      <Label layoutX="-1.0" layoutY="-1.0" prefHeight="104.0" prefWidth="691.0" style="-fx-background-color: #299ed0;" textFill="#299ed0" />
       <ImageView fitHeight="126.0" fitWidth="97.0" layoutX="3.0" layoutY="3.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../resources/group.png" />
@@ -27,7 +26,7 @@
          </font>
       </Label>
       <JFXListView fx:id="groups" layoutY="173.0" prefHeight="507.0" prefWidth="338.0" />
-      <JFXListView fx:id="users" layoutX="339.0" layoutY="173.0" prefHeight="507.0" prefWidth="350.0" />
+      <JFXListView fx:id="users" layoutX="339.0" layoutY="173.0" onMouseClicked="#handleMouseClick" prefHeight="507.0" prefWidth="350.0" />
       <Label alignment="CENTER" contentDisplay="CENTER" layoutX="-1.0" layoutY="102.0" prefHeight="71.0" prefWidth="337.0" text="Groups" textAlignment="CENTER" textFill="WHITE">
          <font>
             <Font name="System Bold Italic" size="29.0" />

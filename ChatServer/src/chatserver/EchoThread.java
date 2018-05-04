@@ -158,6 +158,17 @@ public class EchoThread extends Thread {
                     ret = ret.substring(0, ret.length() - 1);
                     dtotpt.writeUTF(ret);    
                 }
+                
+                else if (tokens[0].equals("Get UserIp")){
+                   for (user u: ChatServer.allusers) {
+                         if (u.username.equals(tokens[1]))
+                         {
+                             System.out.println(u.username);
+                             System.out.println(u.ip);
+                             try{dtotpt.writeUTF(u.ip);}    catch(Exception e){e.printStackTrace();};
+                         }
+        }
+                }
                 else if(tokens[0].equals("room")){
                     if(tokens[1].equals("create")){
                         chatRoom cr=new chatRoom(tokens[2], tokens[3]);

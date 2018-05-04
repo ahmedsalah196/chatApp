@@ -2,6 +2,7 @@
 package chatapplicaton;
 
 import com.jfoenix.controls.JFXListView;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -14,6 +15,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
+import javafx.scene.input.MouseEvent;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.event.ActionEvent;
@@ -123,6 +125,9 @@ public class LobbyController implements Initializable {
     @FXML
     public JFXListView <String> users;
     
+     @FXML 
+   public void handleMouseClick(MouseEvent arg0) {
+    System.out.println("clickedaa on " + users.getSelectionModel().getSelectedItem());}
     
   
     @Override
@@ -144,6 +149,44 @@ public class LobbyController implements Initializable {
     
     
 }));
+      
+     users.setOnMouseClicked(new EventHandler<MouseEvent>() {
+
+        @Override
+        public void handle(MouseEvent event) {
+            System.out.println("clicked on the" + users.getSelectionModel().getSelectedItem());
+         
+            
+       
+      String[] listItem = users.getSelectionModel().getSelectedItem().split("-");
+      listItem[0]=  listItem[0].trim();
+      
+    System.out.println("HGAAHAHAHA");
+     try{
+    dout.writeUTF("Get UserIp,"+listItem[0]);
+    System.out.println("ONLY ONCE");
+    String TargetUserIp = din.readUTF();
+ 
+    Socket socket = new Socket(TargetUserIp,3003);
+    new ChatThread(socket).start();
+    
+    }
+    catch(Exception e)
+    {e.printStackTrace();}
+    
+   
+    }
+        
+    });
+     
+   
+      
+     
+  
+    
+         
+    
+    
         groups.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
             try {
                 dout.writeUTF("room,add,"+groups.getSelectionModel().getSelectedIndex()+","+username);
