@@ -43,6 +43,7 @@ public class EchoThread extends Thread {
                 ChatServer.online.remove(u);
             }
         }
+
         user u=new user(tokens[1],tokens[2],tokens[3],socket.getInetAddress().getHostAddress());
         System.out.println(socket.getInetAddress().getHostAddress());
         if(socket.getInetAddress().getHostAddress().equals("127.0.0.1")||socket.getInetAddress().getHostAddress().equals("localhost"))
@@ -63,6 +64,7 @@ public class EchoThread extends Thread {
         user u =new user(tokens[1],tokens[2],socket.getInetAddress().getHostAddress());
         System.out.println(socket.getInetAddress().getHostAddress());
         ChatServer.allusers.add(u);
+
         return true;
     }
     public void run() {

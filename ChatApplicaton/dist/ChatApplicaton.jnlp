@@ -8,9 +8,19 @@
   </information>
   <resources>
     <j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se"/>
+<<<<<<< HEAD
     <jar href="ChatApplicaton.jar" size="88016" download="eager" />
+=======
+<<<<<<< HEAD
+    <jar href="ChatApplicaton.jar" size="53182" download="eager" />
+    <jar href="lib\gson-2.8.2.jar" size="232932" download="eager" />
+    <jar href="lib\jfoenix-1.9.1.jar" size="2384613" download="eager" />
+=======
+    <jar href="ChatApplicaton.jar" size="86412" download="eager" />
+>>>>>>> c204a3fc0eebdb1fc0dd74987a644e272f0c5fdb
     <jar href="lib/gson-2.8.2.jar" size="232932" download="eager" />
     <jar href="lib/jfoenix-1.9.1.jar" size="2384613" download="eager" />
+>>>>>>> 4d514bd7d6adcba326a0a876a2034610ecf66687
   </resources>
   <applet-desc  width="800" height="600" main-class="com.javafx.main.NoJavaFXFallback"  name="ChatApplicaton" >
     <param name="requiredFXVersion" value="8.0+"/>

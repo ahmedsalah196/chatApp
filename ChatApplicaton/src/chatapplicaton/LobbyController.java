@@ -15,6 +15,7 @@ import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -28,6 +29,8 @@ import javafx.stage.Stage;
  *
  * @author ahmedsalah
  */
+
+
 class polling implements Runnable{
 
     static Socket s;
@@ -43,6 +46,7 @@ class polling implements Runnable{
        this.lc=lc;
     }
 
+    
     
     @Override
     public void run() {
@@ -117,9 +121,17 @@ public class LobbyController implements Initializable {
      @FXML
     private JFXListView<String> groups;
     @FXML
-    private JFXListView<String> users;
+    public JFXListView <String> users;
+    
+    
+  
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        
+  
+           //newSelection is the currently selected
+           //todo
+
         Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
     public void run() {
         try{
@@ -129,6 +141,8 @@ public class LobbyController implements Initializable {
             System.out.println(e.toString());
         }
     }
+    
+    
 }));
         groups.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
             try {
@@ -161,10 +175,9 @@ public class LobbyController implements Initializable {
         if(!grps.get(0).equals("")){
         groups.setItems(grps);
         groups.refresh();
-        }
-        System.out.println(usr);
         users.setItems(usr);
         users.refresh();
+    }
     }
     @FXML
     void add(ActionEvent event) {
