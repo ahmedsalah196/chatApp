@@ -99,9 +99,11 @@ class Grouppolling implements Runnable{
         try {
             dout.writeUTF("room,request"+","+lc.id+","+username);
             String message=din.readUTF();
+            System.out.println(message);
             String[] users=din.readUTF().split(",");
             Platform.runLater(new Runnable() {
-            @Override public void run() {
+            @Override 
+            public void run() {
             lc.fill(message, FXCollections.observableArrayList(users));
             }
         });
@@ -151,13 +153,14 @@ public class LobbyController implements Initializable {
                     Stage stage=new Stage();
                     FXMLLoader loader = new FXMLLoader();
                     loader.setLocation(getClass().getResource("ChatRoom.fxml"));
-                    try {loader.load();} catch(Exception e) {
-                       e.printStackTrace();
-                      }
+                    loader.load();
                     ChatRoomController logc = loader.getController();
-                    logc.id=groups.getItems().size();
+                    logc.id=groups.getSelectionModel().getSelectedIndex();
                     logc.name.setText(newSelection);
                     logc.user=username;
+                    logc.din=din;
+                    logc.dout=dout;
+                    logc.s=s;
                     Grouppolling gp=new Grouppolling(s, dout, din, username, logc);
                     Thread t=new Thread(gp);
                     t.start();
@@ -213,6 +216,9 @@ public class LobbyController implements Initializable {
         logc.id=groups.getItems().size();
         logc.name.setText(name);
         logc.user=username;
+        logc.din=din;
+        logc.dout=dout;
+        logc.s=s;
         Grouppolling gp=new Grouppolling(s, dout, din, username, logc);
         Thread t=new Thread(gp);
         t.start();

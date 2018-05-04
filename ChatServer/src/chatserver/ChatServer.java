@@ -32,18 +32,6 @@ public class ChatServer extends Application
         Socket socket = null;
         
         chatRoomsAvailable = new ArrayList<chatRoom>();
-//Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
-//    @Override
-//    public void run() {
-//        try{
-//            System.out.println("In shutdown hook");
-//            save();
-//        }
-//        catch(Exception e){
-//            System.out.println(e.toString());
-//        }
-//    }
-//}));
         try {
             serverSocket = new ServerSocket(3001);
         } catch (IOException e) {

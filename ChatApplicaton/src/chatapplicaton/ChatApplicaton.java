@@ -7,7 +7,6 @@ package chatapplicaton;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
-import java.net.InetAddress;
 import java.net.Socket;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
