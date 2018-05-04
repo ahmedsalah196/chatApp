@@ -52,7 +52,7 @@ public class chatRoom {
                 return false;
         }
         for(user u:clientsInRoom){
-            if(u.username.equals(u))
+            if(u.username.equals(msg))
                 return false;
         }
         for(user u:ChatServer.online){

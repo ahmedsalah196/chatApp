@@ -53,7 +53,7 @@ public class EchoThread extends Thread {
         }
         for (user u: ChatServer.online) {
             if (u.username.equals(tokens[1])) {
-                ChatServer.online.remove(u);
+                ret=false;
             }
         }
 
@@ -168,7 +168,7 @@ public class EchoThread extends Thread {
                              System.out.println(u.ip);
                              try{dtotpt.writeUTF(u.ip);}    catch(Exception e){e.printStackTrace();};
                          }
-        }
+                    }
                 }
                 else if(tokens[0].equals("room")){
                     if(tokens[1].equals("create")){

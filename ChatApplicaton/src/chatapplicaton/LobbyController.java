@@ -12,6 +12,7 @@ import java.net.Socket;
 import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
@@ -27,6 +28,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 /**
  * FXML Controller class
@@ -42,6 +44,7 @@ class polling implements Runnable{
     static DataInputStream din = null;
     String username;
     LobbyController lc;
+    private volatile boolean exit = false;
     public polling(Socket s,DataOutputStream dout,DataInputStream din,String username,LobbyController lc) {
        this.s=s;
        this.dout=dout;
@@ -55,7 +58,7 @@ class polling implements Runnable{
     @Override
     public void run() {
 
-        while(true)
+        while(!exit)
         try {
             dout.writeUTF("request statuses");
             String[] statuses=din.readUTF().split(",");
@@ -78,6 +81,9 @@ class polling implements Runnable{
             Logger.getLogger(polling.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    public void stop(){
+        exit = true;
+    }
     
 }
 class Grouppolling implements Runnable{
@@ -87,6 +93,7 @@ class Grouppolling implements Runnable{
     static DataInputStream din = null;
     String username;
     ChatRoomController lc;
+    private volatile boolean exit = false;
     public Grouppolling(Socket s,DataOutputStream dout,DataInputStream din,String username,ChatRoomController lc) {
        this.s=s;
        this.dout=dout;
@@ -99,11 +106,10 @@ class Grouppolling implements Runnable{
     @Override
     public void run() {
 
-        while(true)
+        while(!exit)
         try {
             dout.writeUTF("room,request"+","+lc.id+","+username);
             String message=din.readUTF();
-            System.out.println(message);
             String[] users=din.readUTF().split(",");
             Platform.runLater(new Runnable() {
             @Override 
@@ -115,6 +121,9 @@ class Grouppolling implements Runnable{
         } catch (Exception ex) {
             Logger.getLogger(polling.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+    public void stop(){
+        exit = true;
     }
     
 }
@@ -185,15 +194,6 @@ public class LobbyController implements Initializable {
     }
         
     });
-     
-   
-      
-     
-  
-    
-         
-    
-    
         groups.setOnMouseClicked(new EventHandler<MouseEvent>() {
 
         @Override
@@ -221,6 +221,17 @@ public class LobbyController implements Initializable {
                     Scene scene1 = new Scene(root);
                     stage.setScene(scene1);
                     stage.show();
+                    stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+                    @Override
+                    public void handle(WindowEvent we) {
+                        gp.stop();
+                        try {
+                            dout.writeUTF("room,remove,"+ind+","+username);
+                        } catch (IOException ex) {
+                            Logger.getLogger(LobbyController.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+                });
                     groups.getSelectionModel().clearSelection();
                 }
                 else {
@@ -284,5 +295,16 @@ public class LobbyController implements Initializable {
         Scene scene1 = new Scene(root);
         stage.setScene(scene1);
         stage.show();
+        stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+          @Override
+          public void handle(WindowEvent we) {
+              gp.stop();
+              try {
+                            dout.writeUTF("room,remove,"+logc.id+","+username);
+                        } catch (IOException ex) {
+                            Logger.getLogger(LobbyController.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+          }
+      });
     }
 }

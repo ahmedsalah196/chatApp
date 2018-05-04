@@ -30,6 +30,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import javax.swing.JTextPane;
 
 /**
@@ -87,6 +88,17 @@ public class LoginController implements Initializable {
              Node  source = (Node)  e.getSource(); 
             Stage stage1  = (Stage) source.getScene().getWindow();
             stage1.close();
+            stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+          @Override
+          public void handle(WindowEvent we) {
+              poll.stop();
+              try {
+                    dout.writeUTF("close,"+username);
+                } catch (IOException ex) {
+                    Logger.getLogger(LobbyController.class.getName()).log(Level.SEVERE, null, ex);
+                }
+          }
+      });
              
         } catch (IOException ex) {
             Logger.getLogger(LoginController.class.getName()).log(Level.SEVERE, null, ex);
