@@ -62,7 +62,6 @@ Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
         while (true) {
             try {
                 System.out.println("LISTENING");
-//                System.out.println(InetAddress.getLocalHost());
                 socket = serverSocket.accept();
                 System.out.println("DONE");
             } 
@@ -70,12 +69,11 @@ Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
                 System.out.println("I/O error: " + e);
             }
             Gson gson=new Gson();
-        Type type=new TypeToken<ArrayList<user>>(){}.getType();
+            Type type=new TypeToken<ArrayList<user>>(){}.getType();
             try (BufferedReader br = new BufferedReader(new FileReader("users.json"))) {
                 allusers=new ArrayList(gson.fromJson(br,type));
             }catch(Exception e){
             }
-            // new thread for a client
             new EchoThread(socket).start();
         }
         

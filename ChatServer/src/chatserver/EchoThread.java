@@ -44,14 +44,14 @@ public class EchoThread extends Thread {
             }
         }
         user u=new user(tokens[1],tokens[2],tokens[3],socket.getInetAddress().getHostAddress());
+        System.out.println(socket.getInetAddress().getHostAddress());
         if(socket.getInetAddress().getHostAddress().equals("127.0.0.1")||socket.getInetAddress().getHostAddress().equals("localhost"))
             try {
                 u.ip=InetAddress.getLocalHost().toString().substring(InetAddress.getLocalHost().toString().lastIndexOf('/')+1);
         } catch (UnknownHostException ex) {
             Logger.getLogger(EchoThread.class.getName()).log(Level.SEVERE, null, ex);
         }
-System.out.println(u.ip);
-
+        System.out.println(u.ip);
         ChatServer.online.add(u);
         return ret;
     }
@@ -76,11 +76,6 @@ System.out.println(u.ip);
         } catch (Exception e) {
             return;
         }
-
-
-
-        // txtbxarea.setText(txtbxarea.getText().trim()+"\n Client:"+msgin);
-
         try {
 
             while (true) {
@@ -133,7 +128,7 @@ System.out.println(u.ip);
                             }
                         if(!on){
                             u.status="offline";
-                        }
+                        }                        
                         ret+=u.username+" - "+u.status+",";
                         
                     }
@@ -144,6 +139,7 @@ System.out.println(u.ip);
                     for(chatRoom cr:ChatServer.rooms){
                         ret+=cr.roomName+",";
                     }
+                    if(ret.length()>0)
                     ret = ret.substring(0, ret.length() - 1);
                     dtotpt.writeUTF(ret);    
                 }
@@ -186,6 +182,7 @@ System.out.println(u.ip);
                                 }
                             }
                         dtotpt.writeUTF(ret);
+                        if(ret2.length()>0)
                         ret2 = ret2.substring(0, ret2.length() - 1);
                         dtotpt.writeUTF(ret2);
                     }

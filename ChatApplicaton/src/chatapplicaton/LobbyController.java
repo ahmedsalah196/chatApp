@@ -12,6 +12,7 @@ import java.util.ResourceBundle;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -59,7 +60,11 @@ class polling implements Runnable{
                     break;
                 }
             }
-            lc.fillusers(stats,grps);
+            Platform.runLater(new Runnable() {
+            @Override public void run() {
+                lc.fillusers(stats,grps);
+            }
+        });
             Thread.sleep(2000);
         } catch (Exception ex) {
             Logger.getLogger(polling.class.getName()).log(Level.SEVERE, null, ex);
@@ -91,8 +96,12 @@ class Grouppolling implements Runnable{
             dout.writeUTF("room,request"+","+lc.id+","+username);
             String message=din.readUTF();
             String[] users=din.readUTF().split(",");
+            Platform.runLater(new Runnable() {
+            @Override public void run() {
             lc.fill(message, FXCollections.observableArrayList(users));
-            //Thread.sleep(2000);
+            }
+        });
+            Thread.sleep(1000);
         } catch (Exception ex) {
             Logger.getLogger(polling.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -149,8 +158,11 @@ public class LobbyController implements Initializable {
 });
     }   
     public void fillusers(ObservableList<String> usr,ObservableList<String> grps){
+        if(!grps.get(0).equals("")){
         groups.setItems(grps);
         groups.refresh();
+        }
+        System.out.println(usr);
         users.setItems(usr);
         users.refresh();
     }
