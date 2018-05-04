@@ -11,12 +11,12 @@
 
 <AnchorPane id="AnchorPane" prefHeight="624.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="chatapplicaton.ChatRoomController">
    <children>
-      <Label fx:id="name" prefHeight="65.0" prefWidth="296.0" style="-fx-background-color: #299ed0;" textFill="WHITE">
+      <Label fx:id="name" alignment="CENTER" prefHeight="65.0" prefWidth="296.0" style="-fx-background-color: #299ed0;" textFill="WHITE">
          <font>
             <Font size="18.0" />
          </font></Label>
-      <JFXListView fx:id="members" layoutY="65.0" prefHeight="559.0" prefWidth="249.0" />
-      <JFXListView fx:id="kick" layoutX="249.0" layoutY="65.0" prefHeight="559.0" prefWidth="47.0" />
+      <JFXListView fx:id="members" layoutY="65.0" prefHeight="559.0" prefWidth="221.0" />
+      <JFXListView fx:id="kick" layoutX="220.0" layoutY="98.0" prefHeight="526.0" prefWidth="76.0" />
       <JFXTextArea fx:id="history" editable="false" layoutX="296.0" layoutY="3.0" maxWidth="344.0" minWidth="337.0" prefHeight="574.0" prefWidth="344.0" />
       <JFXTextArea fx:id="message" layoutX="294.0" layoutY="581.0" maxWidth="307.0" minWidth="307.0" prefHeight="39.0" prefWidth="307.0" />
       <ImageView fitHeight="39.0" fitWidth="35.0" layoutX="603.0" layoutY="583.0" pickOnBounds="true" preserveRatio="true">
@@ -25,5 +25,6 @@
          </image>
       </ImageView>
       <JFXButton layoutX="603.0" layoutY="583.0" onAction="#send" prefHeight="35.0" prefWidth="35.0" ripplerFill="WHITE" text=" " />
+      <Label alignment="CENTER" layoutX="220.0" layoutY="65.0" prefHeight="35.0" prefWidth="76.0" style="-fx-background-color: #cc2d2d;" text="Kick" textFill="WHITE" />
    </children>
 </AnchorPane>

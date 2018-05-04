@@ -9,10 +9,12 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.net.Socket;
 import javafx.application.Application;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 /**
  *
@@ -47,6 +49,12 @@ din = new DataInputStream(so.getInputStream());
         stage.setScene(scene1);
         stage.show();
         stage.setResizable(false);
+        stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+          @Override
+          public void handle(WindowEvent we) {
+              System.exit(1);
+          }
+      });
 }
     public static void main(String[] args) {
         launch(args);

@@ -7,12 +7,9 @@ import com.jfoenix.controls.JFXSnackbar;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.net.InetAddress;
 import java.net.Socket;
 import java.net.URL;
 import java.util.ResourceBundle;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
@@ -152,20 +149,6 @@ public class LobbyController implements Initializable {
   
            //newSelection is the currently selected
            //todo
-
-        Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
-    public void run() {
-        try{
-            dout.writeUTF("close,"+username);
-        }
-        catch(Exception e){
-            System.out.println(e.toString());
-        }
-    }
-    
-    
-}));
-      
      users.setOnMouseClicked(new EventHandler<MouseEvent>() {
 
         @Override

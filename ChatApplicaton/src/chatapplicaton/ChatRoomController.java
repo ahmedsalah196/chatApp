@@ -16,11 +16,16 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 
 /**
  * FXML Controller class
@@ -48,29 +53,42 @@ public class ChatRoomController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
-    public void run() {
-        try{
-            System.out.println("removing "+user);
-            dout.writeUTF("room,remove,"+id+","+user);
-        }
-        catch(Exception e){
-            System.out.println(e.toString());
-        }
+        
     }
-}));
-    } 
-    
     public void fill(String hstry,ObservableList<String> users){
         if(!users.get(0).equals("")){
         members.setItems(users);
         members.refresh();
+        ObservableList<JFXButton> kicks=FXCollections.observableArrayList();
+        for(int i=0;i<users.size();i++){
+            JFXButton but=new JFXButton(users.get(i));
+            if(!user.equals(admin))
+                but.setDisable(true);
+            if(!user.equals(admin)) return;
+
+            but.setOnAction(new EventHandler<ActionEvent>(){
+                @Override
+                public void handle(ActionEvent event) {
+            try {
+                System.out.println("Kicking "+but.getText());
+                dout.writeUTF("room,kick,"+id+","+but.getText());
+            } catch (IOException ex) {
+                Logger.getLogger(ChatRoomController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        
+        }
+            });
+            kicks.add(but);
+        }
+        kick.setItems(kicks);
+        kick.refresh();
         }
         history.setText(hstry);
     }
     @FXML
     void send(ActionEvent event) {
         try {
+            message.setText("");
             dout.writeUTF("room,send,"+id+","+user+": " +message.getText());
         } catch (IOException ex) {
             Logger.getLogger(ChatRoomController.class.getName()).log(Level.SEVERE, null, ex);
