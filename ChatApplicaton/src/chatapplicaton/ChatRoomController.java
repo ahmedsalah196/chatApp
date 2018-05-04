@@ -62,7 +62,7 @@ public class ChatRoomController implements Initializable {
         ObservableList<JFXButton> kicks=FXCollections.observableArrayList();
         for(int i=0;i<users.size();i++){
             JFXButton but=new JFXButton(users.get(i));
-            if(!user.equals(admin))
+            if(!user.equals(admin)||users.get(i).equals(admin))
                 but.setDisable(true);
             if(!user.equals(admin)) kick.setDisable(true);
 

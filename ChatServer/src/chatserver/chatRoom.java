@@ -86,7 +86,7 @@ public class chatRoom {
      */
     public void kickAclient(String username){
         for (int i = 0; i < this.clientsInRoom.size(); i++) {
-            if (this.clientsInRoom.get(i).username.equalsIgnoreCase(username)) {
+            if (this.clientsInRoom.get(i).username.equals(username)) {
                 blocked.add(clientsInRoom.get(i).username);
                 this.clientsInRoom.remove(i);
                 break;
@@ -95,7 +95,7 @@ public class chatRoom {
     }
     public void remove(String username){
         for (int i = 0; i < this.clientsInRoom.size(); i++) {
-            if (this.clientsInRoom.get(i).username.equalsIgnoreCase(username)) {
+            if (this.clientsInRoom.get(i).username.equals(username)) {
                 this.clientsInRoom.remove(i);
                 break;
             }

@@ -3,13 +3,14 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/ASUS/Documents/GitHub/chatApp/ChatApplicaton/src/chatapplicaton/LoginController.java</file>
-            <file>file:/C:/Users/ASUS/Documents/GitHub/chatApp/ChatApplicaton/src/chatapplicaton/ChatThread.java</file>
-            <file>file:/C:/Users/ASUS/Documents/GitHub/chatApp/ChatApplicaton/src/chatapplicaton/ChatApplicaton.java</file>
-            <file>file:/C:/Users/ASUS/Documents/GitHub/chatApp/ChatApplicaton/src/chatapplicaton/ClientListeningThread.java</file>
-            <file>file:/C:/Users/ASUS/Documents/GitHub/chatApp/ChatApplicaton/src/chatapplicaton/LobbyController.java</file>
-            <file>file:/C:/Users/ASUS/Documents/GitHub/chatApp/ChatApplicaton/src/chatapplicaton/OngoingChatController.java</file>
-            <file>file:/C:/Users/ASUS/Documents/GitHub/chatApp/ChatApplicaton/src/chatapplicaton/GroupnameController.java</file>
+            <file>file:/Users/ahmedsalah/NetBeansProjects/chatApp/ChatApplicaton/src/chatapplicaton/ChatRoomController.java</file>
+            <file>file:/Users/ahmedsalah/NetBeansProjects/chatApp/ChatApplicaton/src/chatapplicaton/OngoingChatController.java</file>
+            <file>file:/Users/ahmedsalah/NetBeansProjects/chatApp/ChatApplicaton/src/chatapplicaton/ChatThread.java</file>
+            <file>file:/Users/ahmedsalah/NetBeansProjects/chatApp/ChatApplicaton/src/chatapplicaton/ChatRoom.fxml</file>
+            <file>file:/Users/ahmedsalah/NetBeansProjects/chatApp/ChatApplicaton/src/chatapplicaton/ChatApplicaton.java</file>
+            <file>file:/Users/ahmedsalah/NetBeansProjects/chatApp/ChatApplicaton/src/chatapplicaton/LobbyController.java</file>
+            <file>file:/Users/ahmedsalah/NetBeansProjects/chatApp/ChatApplicaton/src/chatapplicaton/ClientListeningThread.java</file>
+            <file>file:/Users/ahmedsalah/NetBeansProjects/chatApp/ChatApplicaton/src/chatapplicaton/LoginController.java</file>
         </group>
     </open-files>
 </project-private>

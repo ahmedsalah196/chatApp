@@ -135,6 +135,8 @@ public class EchoThread extends Thread {
                             ChatServer.online.remove(u);
                             break;
                         }
+                    for(chatRoom cr: ChatServer.rooms)
+                        cr.remove(tokens[1]);
                 }
                 else if (tokens[0].equals("request statuses")){
                     String ret="";
