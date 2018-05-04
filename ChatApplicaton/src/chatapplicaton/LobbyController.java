@@ -175,9 +175,9 @@ public class LobbyController implements Initializable {
         if(!grps.get(0).equals("")){
         groups.setItems(grps);
         groups.refresh();
+        }
         users.setItems(usr);
         users.refresh();
-    }
     }
     @FXML
     void add(ActionEvent event) {

@@ -31,6 +31,19 @@ public class EchoThread extends Thread {
     public EchoThread(Socket clientSocket) {
         this.socket = clientSocket;
     }
+     private  void save() {
+        System.out.println("here");
+        Gson gson = new Gson();
+        Type type = new TypeToken < ArrayList < user >> () {}.getType();
+        String json = gson.toJson(ChatServer.allusers, type);
+        try {
+            FileWriter fw = new FileWriter("users.json");
+            fw.write(json);
+            fw.close();
+        } catch (Exception e) {
+            e.getMessage();
+        }
+    }
     private boolean signin(String[] tokens) {
         boolean ret = false;
         for (user u: ChatServer.allusers) {
@@ -64,7 +77,7 @@ public class EchoThread extends Thread {
         user u =new user(tokens[1],tokens[2],socket.getInetAddress().getHostAddress());
         System.out.println(socket.getInetAddress().getHostAddress());
         ChatServer.allusers.add(u);
-
+        save();
         return true;
     }
     public void run() {

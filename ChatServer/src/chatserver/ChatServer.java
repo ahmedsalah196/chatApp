@@ -25,40 +25,37 @@ public class ChatServer extends Application
     static ArrayList<user> online = new  ArrayList<user>() ;
     static ArrayList<user> allusers = new ArrayList<user> ();
     static ArrayList<chatRoom> rooms=new ArrayList<chatRoom> ();
-    private void save() {
-        Gson gson = new Gson();
-        Type type = new TypeToken < ArrayList < user >> () {}.getType();
-        String json = gson.toJson(ChatServer.allusers, type);
-        try {
-            FileWriter fw = new FileWriter("users.json");
-            fw.write(json);
-            fw.close();
-        } catch (Exception e) {
-            e.getMessage();
-        }
-    }
+   
     @Override
     public void start(Stage stage) throws Exception {
         ServerSocket serverSocket = null;
         Socket socket = null;
         
         chatRoomsAvailable = new ArrayList<chatRoom>();
-Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
-    public void run() {
-        try{
-            save();
-        }
-        catch(Exception e){
-            System.out.println(e.toString());
-        }
-    }
-}));
+//Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+//    @Override
+//    public void run() {
+//        try{
+//            System.out.println("In shutdown hook");
+//            save();
+//        }
+//        catch(Exception e){
+//            System.out.println(e.toString());
+//        }
+//    }
+//}));
         try {
             serverSocket = new ServerSocket(3001);
         } catch (IOException e) {
             e.printStackTrace();
 
         }
+        Gson gson=new Gson();
+            Type type=new TypeToken<ArrayList<user>>(){}.getType();
+            try (BufferedReader br = new BufferedReader(new FileReader("users.json"))) {
+                allusers=new ArrayList(gson.fromJson(br,type));
+            }catch(Exception e){
+            }
         while (true) {
             try {
                 System.out.println("LISTENING");
@@ -68,12 +65,7 @@ Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
             catch (IOException e) {
                 System.out.println("I/O error: " + e);
             }
-            Gson gson=new Gson();
-            Type type=new TypeToken<ArrayList<user>>(){}.getType();
-            try (BufferedReader br = new BufferedReader(new FileReader("users.json"))) {
-                allusers=new ArrayList(gson.fromJson(br,type));
-            }catch(Exception e){
-            }
+            
             new EchoThread(socket).start();
         }
         
