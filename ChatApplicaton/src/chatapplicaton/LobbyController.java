@@ -91,12 +91,14 @@ class Grouppolling implements Runnable{
     String username;
     ChatRoomController lc;
     private volatile boolean exit = false;
-    public Grouppolling(Socket s,DataOutputStream dout,DataInputStream din,String username,ChatRoomController lc) {
+    Stage stage;
+    public Grouppolling(Stage stage,Socket s,DataOutputStream dout,DataInputStream din,String username,ChatRoomController lc) {
        this.s=s;
        this.dout=dout;
        this.din=din;
        this.username = username;
        this.lc=lc;
+       this.stage=stage;
     }
 
     
@@ -108,9 +110,15 @@ class Grouppolling implements Runnable{
             dout.writeUTF("room,request"+","+lc.id+","+username);
             String message=din.readUTF();
             String[] users=din.readUTF().split(",");
+            exit=true;
+            for(String str:users)
+                if(str.equals(username))
+                    exit=false;
             Platform.runLater(new Runnable() {
             @Override 
             public void run() {
+                if(exit)
+                    stage.close();
             lc.fill(message, FXCollections.observableArrayList(users));
             }
         });
@@ -202,7 +210,7 @@ public class LobbyController implements Initializable {
                     logc.din=din;
                     logc.dout=dout;
                     logc.s=s;
-                    Grouppolling gp=new Grouppolling(s, dout, din, username, logc);
+                    Grouppolling gp=new Grouppolling(stage,s, dout, din, username, logc);
                     Thread t=new Thread(gp);
                     t.start();
                     Parent root = loader.getRoot();
@@ -276,7 +284,7 @@ public class LobbyController implements Initializable {
         logc.din=din;
         logc.dout=dout;
         logc.s=s;
-        Grouppolling gp=new Grouppolling(s, dout, din, username, logc);
+        Grouppolling gp=new Grouppolling(stage, s, dout, din, username, logc);
         Thread t=new Thread(gp);
         t.start();
         Parent root = loader.getRoot();

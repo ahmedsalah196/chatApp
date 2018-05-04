@@ -64,7 +64,7 @@ public class ChatRoomController implements Initializable {
             JFXButton but=new JFXButton(users.get(i));
             if(!user.equals(admin))
                 but.setDisable(true);
-            if(!user.equals(admin)) return;
+            if(!user.equals(admin)) kick.setDisable(true);
 
             but.setOnAction(new EventHandler<ActionEvent>(){
                 @Override
@@ -88,8 +88,8 @@ public class ChatRoomController implements Initializable {
     @FXML
     void send(ActionEvent event) {
         try {
-            message.setText("");
             dout.writeUTF("room,send,"+id+","+user+": " +message.getText());
+            message.setText("");
         } catch (IOException ex) {
             Logger.getLogger(ChatRoomController.class.getName()).log(Level.SEVERE, null, ex);
         }
