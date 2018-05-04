@@ -37,7 +37,7 @@ public class ClientListeningThread extends Thread{
        // chatRoomsAvailable = new ArrayList<chatRoom>();
 
         try {
-            serverSocket = new ServerSocket(3004);
+            serverSocket = new ServerSocket(3003);
         } catch (IOException e) {
             e.printStackTrace();
 

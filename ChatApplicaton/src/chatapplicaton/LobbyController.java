@@ -169,7 +169,7 @@ public class LobbyController implements Initializable {
     System.out.println("ONLY ONCE");
     String TargetUserIp = din.readUTF();
  
-    Socket socket = new Socket(TargetUserIp,3003);
+    Socket socket = new Socket(TargetUserIp,3002);
     new ChatThread(socket).start();
     
     }
