@@ -30,6 +30,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import javax.swing.JTextPane;
 
 /**
@@ -46,6 +47,7 @@ public class LoginController implements Initializable {
     EventHandler handler;
     @FXML
     private JFXComboBox<Label> status;
+   
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         status.setValue(new Label("Online"));
@@ -59,6 +61,9 @@ public class LoginController implements Initializable {
         status.getItems().add(new Label("Busy"));
         status.getItems().add(new Label("Away"));
     }    
+    
+    @FXML
+    public  JFXTextField portnumbertxtbox;
      @FXML
     private JFXTextField username;
     @FXML
@@ -87,6 +92,19 @@ public class LoginController implements Initializable {
              Node  source = (Node)  e.getSource(); 
             Stage stage1  = (Stage) source.getScene().getWindow();
             stage1.close();
+            stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+          @Override
+          public void handle(WindowEvent we) {
+              poll.stop();
+              try {
+                    dout.writeUTF("close,"+username.getText());
+                    Thread.sleep(500);
+                    System.exit(1);
+                } catch (Exception ex) {
+                    Logger.getLogger(LobbyController.class.getName()).log(Level.SEVERE, null, ex);
+                }
+          }
+      });
              
         } catch (IOException ex) {
             Logger.getLogger(LoginController.class.getName()).log(Level.SEVERE, null, ex);
@@ -96,10 +114,15 @@ public class LoginController implements Initializable {
     @FXML
     void signin(ActionEvent event) {
         String stat=status.getValue().getText();
+          String portNo = portnumbertxtbox.getText();
+            if(portNo.equals(""))portNo="3002";
         if(stat==null) stat="Online";
+       
         try {
-            dout.writeUTF("signin,"+username.getText()+","+password.getText()+","+stat);
-        } catch (IOException ex) {
+            
+           
+            dout.writeUTF("signin,"+username.getText()+","+password.getText()+","+stat+","+portNo);
+        } catch (Exception ex) {
             Logger.getLogger(LoginController.class.getName()).log(Level.SEVERE, null, ex);
         }
 
@@ -108,7 +131,8 @@ public class LoginController implements Initializable {
             String message = din.readUTF();
             System.out.println(message);
                     if(message.equals("valid signin"))
-                        show(event);
+                    { new ClientListeningThread(portNo).start();
+                        show(event);}
                     else {
                         snackbar=new JFXSnackbar(root);
                         snackbar.show("Invalid Username/Password, please try again", "Okay",5000,handler);

@@ -14,6 +14,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 
@@ -24,6 +25,7 @@ public class OngoingChatController implements Initializable {
     @FXML  ListView lvChatWindow;
     @FXML private TextField tfUser1, tfUser2;
     @FXML JFXButton sendButton;
+    @FXML Label otheruser;
     
     public DataOutputStream dtotpt;
     ObservableList<String> chatMessages = FXCollections.observableArrayList();//create observablelist for listview
@@ -49,6 +51,7 @@ public class OngoingChatController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
         lvChatWindow.setItems(chatMessages);//attach the observablelist to the listview
+        otheruser.setText("Chatting with ");
     }      
 }
     

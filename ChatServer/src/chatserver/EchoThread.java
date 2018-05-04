@@ -53,11 +53,14 @@ public class EchoThread extends Thread {
         }
         for (user u: ChatServer.online) {
             if (u.username.equals(tokens[1])) {
-                ChatServer.online.remove(u);
+                ret=false;
             }
         }
-
-        user u=new user(tokens[1],tokens[2],tokens[3],socket.getInetAddress().getHostAddress());
+        if(tokens[4].equals(""))
+            tokens[4]="3002";
+        
+        System.out.println("SJSJSJ" + tokens[4]);
+        user u=new user(tokens[1],tokens[2],tokens[3],socket.getInetAddress().getHostAddress(),tokens[4]);
         System.out.println(socket.getInetAddress().getHostAddress());
         if(socket.getInetAddress().getHostAddress().equals("127.0.0.1")||socket.getInetAddress().getHostAddress().equals("localhost"))
             try {
@@ -161,14 +164,15 @@ public class EchoThread extends Thread {
                 }
                 
                 else if (tokens[0].equals("Get UserIp")){
-                   for (user u: ChatServer.allusers) {
+                   for (user u: ChatServer.online) {
                          if (u.username.equals(tokens[1]))
                          {
                              System.out.println(u.username);
                              System.out.println(u.ip);
-                             try{dtotpt.writeUTF(u.ip);}    catch(Exception e){e.printStackTrace();};
+                             System.out.println(u.portNumber);
+                             try{dtotpt.writeUTF(u.ip+","+u.portNumber);}    catch(Exception e){e.printStackTrace();};
                          }
-        }
+                    }
                 }
                 else if(tokens[0].equals("room")){
                     if(tokens[1].equals("create")){
@@ -179,7 +183,7 @@ public class EchoThread extends Thread {
                         for(chatRoom cr:ChatServer.rooms){
                             if(Integer.parseInt(tokens[2])==cr.currentRoomNum){
                                 if(!cr.addToRoom(tokens[3])){
-                                    dtotpt.writeUTF("blocked");
+                                    dtotpt.writeUTF("you can't join the room");
                                 }
                                 else{
                                     dtotpt.writeUTF("valid");

@@ -30,15 +30,17 @@ import javafx.stage.Stage;
 public class ChatThread extends Thread implements Initializable{
     
     protected Socket socket;
+    String user2Name;
     @FXML public ListView lvChatWindow;
     @FXML public TextField tfUser1;
        DataInputStream dtinpt = null;
         DataOutputStream dtotpt = null;
   ObservableList<String> chatMessages = FXCollections.observableArrayList();//create observablelist for listview
 
-    public ChatThread(Socket clientSocket) {
+    public ChatThread(Socket clientSocket,String user2Name) {
         this.socket = clientSocket;
         this.lvChatWindow = lvChatWindow;
+        this.user2Name = user2Name;
       
         try{
         dtotpt = new DataOutputStream(clientSocket.getOutputStream());
@@ -60,9 +62,6 @@ public class ChatThread extends Thread implements Initializable{
  Platform.runLater(() -> {
         Stage stage=new Stage();
         FXMLLoader loader = new FXMLLoader();
-        
-
-       System.out.println("MAAAAAAAAIN" + this.dtotpt);
          
          
         loader.setLocation(getClass().getResource("OngoingChat.fxml"));
@@ -72,13 +71,12 @@ public class ChatThread extends Thread implements Initializable{
            e.printStackTrace();
         }
         OngoingChatController c = loader.getController();
-         c.dtotpt = this.dtotpt;
-         this.lvChatWindow=c.lvChatWindow;
-         
-          lvChatWindow.setItems(chatMessages);
-          c.chatMessages=chatMessages;
-        System.out.println("XJADKLJADJSALDJALD"+lvChatWindow);
-        new ReceivingMessageThread(lvChatWindow,chatMessages, dtinpt).start();
+        c.dtotpt = this.dtotpt;
+        c.otheruser.setText("Chatting with " + user2Name);
+        this.lvChatWindow=c.lvChatWindow;
+        lvChatWindow.setItems(chatMessages);
+        c.chatMessages=chatMessages;
+        new ReceivingMessageThread(user2Name,lvChatWindow,chatMessages, dtinpt).start();
         
           
   

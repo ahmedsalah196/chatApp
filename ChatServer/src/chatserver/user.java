@@ -6,13 +6,14 @@
 package chatserver;
 
 public class user {
-   String username,password,ip,status;
+   String username,password,ip,status,portNumber;
    boolean adm;
-    public user(String username, String password,String status, String ip) {
+    public user(String username, String password,String status, String ip, String portNumber) {
         this.username = username;
         this.password = password;
         this.ip=ip;
         this.status=status;
+        this.portNumber=portNumber;
         if(password.startsWith("adm"))adm=true;
         else adm=false;
     }

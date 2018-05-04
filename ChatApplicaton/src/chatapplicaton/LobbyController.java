@@ -2,15 +2,14 @@
 package chatapplicaton;
 
 import com.jfoenix.controls.JFXListView;
+import com.jfoenix.controls.JFXSnackbar;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.net.InetAddress;
 import java.net.Socket;
 import java.net.URL;
 import java.util.ResourceBundle;
-import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
@@ -24,7 +23,9 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 /**
  * FXML Controller class
@@ -40,6 +41,7 @@ class polling implements Runnable{
     static DataInputStream din = null;
     String username;
     LobbyController lc;
+    private volatile boolean exit = false;
     public polling(Socket s,DataOutputStream dout,DataInputStream din,String username,LobbyController lc) {
        this.s=s;
        this.dout=dout;
@@ -53,7 +55,7 @@ class polling implements Runnable{
     @Override
     public void run() {
 
-        while(true)
+        while(!exit)
         try {
             dout.writeUTF("request statuses");
             String[] statuses=din.readUTF().split(",");
@@ -76,6 +78,9 @@ class polling implements Runnable{
             Logger.getLogger(polling.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    public void stop(){
+        exit = true;
+    }
     
 }
 class Grouppolling implements Runnable{
@@ -85,6 +90,7 @@ class Grouppolling implements Runnable{
     static DataInputStream din = null;
     String username;
     ChatRoomController lc;
+    private volatile boolean exit = false;
     public Grouppolling(Socket s,DataOutputStream dout,DataInputStream din,String username,ChatRoomController lc) {
        this.s=s;
        this.dout=dout;
@@ -97,11 +103,10 @@ class Grouppolling implements Runnable{
     @Override
     public void run() {
 
-        while(true)
+        while(!exit)
         try {
             dout.writeUTF("room,request"+","+lc.id+","+username);
             String message=din.readUTF();
-            System.out.println(message);
             String[] users=din.readUTF().split(",");
             Platform.runLater(new Runnable() {
             @Override 
@@ -114,6 +119,9 @@ class Grouppolling implements Runnable{
             Logger.getLogger(polling.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    public void stop(){
+        exit = true;
+    }
     
 }
 public class LobbyController implements Initializable {
@@ -122,11 +130,14 @@ public class LobbyController implements Initializable {
      Socket s;
      DataOutputStream dout = null;
      DataInputStream din = null;
+         JFXSnackbar snackbar;
      @FXML
     private JFXListView<String> groups;
     @FXML
     public JFXListView <String> users;
     
+    @FXML
+    private AnchorPane root;
      @FXML 
    public void handleMouseClick(MouseEvent arg0) {
     System.out.println("clickedaa on " + users.getSelectionModel().getSelectedItem());}
@@ -138,20 +149,6 @@ public class LobbyController implements Initializable {
   
            //newSelection is the currently selected
            //todo
-
-        Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
-    public void run() {
-        try{
-            dout.writeUTF("close,"+username);
-        }
-        catch(Exception e){
-            System.out.println(e.toString());
-        }
-    }
-    
-    
-}));
-      
      users.setOnMouseClicked(new EventHandler<MouseEvent>() {
 
         @Override
@@ -167,10 +164,15 @@ public class LobbyController implements Initializable {
      try{
     dout.writeUTF("Get UserIp,"+listItem[0]);
     System.out.println("ONLY ONCE");
-    String TargetUserIp = din.readUTF();
+    String IpAndPort = din.readUTF();
+    String Message[] = IpAndPort.split(",");
+            
  
-    Socket socket = new Socket(TargetUserIp,3002);
-    new ChatThread(socket).start();
+ 
+    Socket socket = new Socket(Message[0],Integer.parseInt(Message[1]));
+      DataOutputStream dotpt =new DataOutputStream(socket.getOutputStream());
+       dotpt.writeUTF(username);
+    new ChatThread(socket,listItem[0]).start();
     
     }
     catch(Exception e)
@@ -180,26 +182,22 @@ public class LobbyController implements Initializable {
     }
         
     });
-     
-   
-      
-     
-  
-    
-         
-    
-    
-        groups.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+        groups.setOnMouseClicked(new EventHandler<MouseEvent>() {
+
+        @Override
+        public void handle(MouseEvent event) {
+        int ind=groups.getSelectionModel().getSelectedIndex();
+        if(ind<0) return;
             try {
-                dout.writeUTF("room,add,"+groups.getSelectionModel().getSelectedIndex()+","+username);
+                dout.writeUTF("room,add,"+ind+","+username);
                 if(din.readUTF().equals("valid")){
                     Stage stage=new Stage();
                     FXMLLoader loader = new FXMLLoader();
                     loader.setLocation(getClass().getResource("ChatRoom.fxml"));
                     loader.load();
                     ChatRoomController logc = loader.getController();
-                    logc.id=groups.getSelectionModel().getSelectedIndex();
-                    logc.name.setText(newSelection);
+                    logc.id=ind;
+                    logc.name.setText(groups.getItems().get(ind));
                     logc.user=username;
                     logc.din=din;
                     logc.dout=dout;
@@ -211,11 +209,27 @@ public class LobbyController implements Initializable {
                     Scene scene1 = new Scene(root);
                     stage.setScene(scene1);
                     stage.show();
+                    stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+                    @Override
+                    public void handle(WindowEvent we) {
+                        gp.stop();
+                        try {
+                            dout.writeUTF("room,remove,"+ind+","+username);
+                        } catch (IOException ex) {
+                            Logger.getLogger(LobbyController.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+                });
+                    groups.getSelectionModel().clearSelection();
+                }
+                else {
+                    snackbar=new JFXSnackbar(root);
+                    snackbar.show("Can't join the room",2000);
                 }
             } catch (Exception ex) {
                 Logger.getLogger(LobbyController.class.getName()).log(Level.SEVERE, null, ex);
             }
-});
+}});
     }   
     public void fillusers(ObservableList<String> usr,ObservableList<String> grps){
         if(!grps.get(0).equals("")){
@@ -269,5 +283,16 @@ public class LobbyController implements Initializable {
         Scene scene1 = new Scene(root);
         stage.setScene(scene1);
         stage.show();
+        stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+          @Override
+          public void handle(WindowEvent we) {
+              gp.stop();
+              try {
+                            dout.writeUTF("room,remove,"+logc.id+","+username);
+                        } catch (IOException ex) {
+                            Logger.getLogger(LobbyController.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+          }
+      });
     }
 }

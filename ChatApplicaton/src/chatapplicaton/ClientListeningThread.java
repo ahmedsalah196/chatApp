@@ -28,18 +28,32 @@ import javafx.stage.Stage;
 public class ClientListeningThread extends Thread{
     
 
+   
      ServerSocket serverSocket = null;
         Socket socket = null;
+        String portNo;
+        String user2Name;
+        
+         ClientListeningThread(String portNo){
+             this.portNo=portNo;
+        
+    }
     //public static ArrayList<chatRoom> chatRoomsAvailable;
  public void run() {
        
         
        // chatRoomsAvailable = new ArrayList<chatRoom>();
-
+ 
         try {
-            serverSocket = new ServerSocket(3003);
-        } catch (IOException e) {
-            e.printStackTrace();
+      
+    
+      
+            serverSocket = new ServerSocket(Integer.parseInt(portNo));
+        } catch (Exception e) {
+            
+            System.out.print("X");
+               e.printStackTrace();
+         
 
         }
         while (true) {
@@ -47,14 +61,19 @@ public class ClientListeningThread extends Thread{
                 System.out.println("ClientLISTENING");
                 socket = serverSocket.accept();
               
-         
-               
+                try{
+                DataInputStream dinpt =new DataInputStream(socket.getInputStream());
+                  user2Name = dinpt.readUTF();
+                }catch(Exception e){e.printStackTrace();};
+              
+                
             } 
-            catch (IOException e) {
+            catch (Exception e) {
                 System.out.println("I/O error: " + e);
+              
             }
             
-            new ChatThread(socket).start();
+            new ChatThread(socket,user2Name ).start();
         }
         
     }
