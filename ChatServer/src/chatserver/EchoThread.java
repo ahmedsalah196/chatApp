@@ -66,7 +66,8 @@ public class EchoThread extends Thread {
             Logger.getLogger(EchoThread.class.getName()).log(Level.SEVERE, null, ex);
         }
         System.out.println(u.ip);
-        ChatServer.online.add(u);
+        if(ret)
+            ChatServer.online.add(u);
         return ret;
     }
     private boolean signup(String[] tokens) {
@@ -176,7 +177,7 @@ public class EchoThread extends Thread {
                     }
                     else if(tokens[1].equals("add")){
                         for(chatRoom cr:ChatServer.rooms){
-                            if(Integer.parseInt(tokens[2])==cr.roomNumberTotake){
+                            if(Integer.parseInt(tokens[2])==cr.currentRoomNum){
                                 if(!cr.addToRoom(tokens[3])){
                                     dtotpt.writeUTF("blocked");
                                 }
@@ -189,18 +190,18 @@ public class EchoThread extends Thread {
                     }
                     else if(tokens[1].equals("kick")){
                         for(chatRoom cr:ChatServer.rooms)
-                            if(Integer.parseInt(tokens[2])==cr.roomNumberTotake)
+                            if(Integer.parseInt(tokens[2])==cr.currentRoomNum)
                                 cr.kickAclient(tokens[3]);
                     }
                     else if(tokens[1].equals("send")){
                         for(chatRoom cr:ChatServer.rooms)
-                            if(Integer.parseInt(tokens[2])==cr.roomNumberTotake)
+                            if(Integer.parseInt(tokens[2])==cr.currentRoomNum)
                                 cr.sendMsgToAll(tokens[3]);
                     }
                     else if (tokens[1].equals("request")){
                         String ret="",ret2="";
                         for(chatRoom cr:ChatServer.rooms)
-                            if(Integer.parseInt(tokens[2])==cr.roomNumberTotake){
+                            if(Integer.parseInt(tokens[2])==cr.currentRoomNum){
                                 for(String m:cr.messages)
                                     ret+=m+"\n";
                                 for(user u:cr.clientsInRoom){
@@ -209,12 +210,12 @@ public class EchoThread extends Thread {
                             }
                         dtotpt.writeUTF(ret);
                         if(ret2.length()>0)
-                        ret2 = ret2.substring(0, ret2.length() - 1);
+                            ret2 = ret2.substring(0, ret2.length() - 1);
                         dtotpt.writeUTF(ret2);
                     }
                      else if(tokens[1].equals("remove")){
                         for(chatRoom cr:ChatServer.rooms)
-                            if(Integer.parseInt(tokens[2])==cr.roomNumberTotake)
+                            if(Integer.parseInt(tokens[2])==cr.currentRoomNum)
                                 cr.remove(tokens[3]);
                      }
                     

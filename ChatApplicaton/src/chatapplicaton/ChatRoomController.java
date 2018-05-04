@@ -51,6 +51,7 @@ public class ChatRoomController implements Initializable {
         Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
     public void run() {
         try{
+            System.out.println("removing "+user);
             dout.writeUTF("room,remove,"+id+","+user);
         }
         catch(Exception e){
@@ -61,14 +62,16 @@ public class ChatRoomController implements Initializable {
     } 
     
     public void fill(String hstry,ObservableList<String> users){
+        if(!users.get(0).equals("")){
         members.setItems(users);
         members.refresh();
+        }
         history.setText(hstry);
     }
     @FXML
     void send(ActionEvent event) {
         try {
-            dout.writeUTF("room,send,"+id+","+message.getText());
+            dout.writeUTF("room,send,"+id+","+user+": " +message.getText());
         } catch (IOException ex) {
             Logger.getLogger(ChatRoomController.class.getName()).log(Level.SEVERE, null, ex);
         }

@@ -18,7 +18,7 @@ public class chatRoom {
     public int currentPortNum;
     public int currentRoomNum;
     public ArrayList<String> messages;
-    public ArrayList<String> blocked;
+    public ArrayList<String> blocked=new ArrayList<>();
 
     public chatRoom(String name,String username) {
         this.currentPortNum = chatRoom.portNumbersTotake++;
