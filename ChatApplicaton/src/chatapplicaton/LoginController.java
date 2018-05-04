@@ -94,6 +94,7 @@ public class LoginController implements Initializable {
               poll.stop();
               try {
                     dout.writeUTF("close,"+username);
+                    System.exit(1);
                 } catch (IOException ex) {
                     Logger.getLogger(LobbyController.class.getName()).log(Level.SEVERE, null, ex);
                 }
