@@ -51,6 +51,10 @@ public class chatRoom {
             if(u.equals(msg))
                 return false;
         }
+        for(user u:clientsInRoom){
+            if(u.username.equals(u))
+                return false;
+        }
         for(user u:ChatServer.online){
             if(u.username.equals(msg)){
                 clientsInRoom.add(u);

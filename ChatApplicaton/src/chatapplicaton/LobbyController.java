@@ -2,6 +2,7 @@
 package chatapplicaton;
 
 import com.jfoenix.controls.JFXListView;
+import com.jfoenix.controls.JFXSnackbar;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -24,6 +25,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
 /**
@@ -122,11 +124,14 @@ public class LobbyController implements Initializable {
      Socket s;
      DataOutputStream dout = null;
      DataInputStream din = null;
+         JFXSnackbar snackbar;
      @FXML
     private JFXListView<String> groups;
     @FXML
     public JFXListView <String> users;
     
+    @FXML
+    private AnchorPane root;
      @FXML 
    public void handleMouseClick(MouseEvent arg0) {
     System.out.println("clickedaa on " + users.getSelectionModel().getSelectedItem());}
@@ -189,17 +194,22 @@ public class LobbyController implements Initializable {
          
     
     
-        groups.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+        groups.setOnMouseClicked(new EventHandler<MouseEvent>() {
+
+        @Override
+        public void handle(MouseEvent event) {
+        int ind=groups.getSelectionModel().getSelectedIndex();
+        if(ind<0) return;
             try {
-                dout.writeUTF("room,add,"+groups.getSelectionModel().getSelectedIndex()+","+username);
+                dout.writeUTF("room,add,"+ind+","+username);
                 if(din.readUTF().equals("valid")){
                     Stage stage=new Stage();
                     FXMLLoader loader = new FXMLLoader();
                     loader.setLocation(getClass().getResource("ChatRoom.fxml"));
                     loader.load();
                     ChatRoomController logc = loader.getController();
-                    logc.id=groups.getSelectionModel().getSelectedIndex();
-                    logc.name.setText(newSelection);
+                    logc.id=ind;
+                    logc.name.setText(groups.getItems().get(ind));
                     logc.user=username;
                     logc.din=din;
                     logc.dout=dout;
@@ -211,11 +221,16 @@ public class LobbyController implements Initializable {
                     Scene scene1 = new Scene(root);
                     stage.setScene(scene1);
                     stage.show();
+                    groups.getSelectionModel().clearSelection();
+                }
+                else {
+                    snackbar=new JFXSnackbar(root);
+                    snackbar.show("Can't join the room",2000);
                 }
             } catch (Exception ex) {
                 Logger.getLogger(LobbyController.class.getName()).log(Level.SEVERE, null, ex);
             }
-});
+}});
     }   
     public void fillusers(ObservableList<String> usr,ObservableList<String> grps){
         if(!grps.get(0).equals("")){

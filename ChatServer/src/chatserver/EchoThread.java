@@ -179,7 +179,7 @@ public class EchoThread extends Thread {
                         for(chatRoom cr:ChatServer.rooms){
                             if(Integer.parseInt(tokens[2])==cr.currentRoomNum){
                                 if(!cr.addToRoom(tokens[3])){
-                                    dtotpt.writeUTF("blocked");
+                                    dtotpt.writeUTF("you can't join the room");
                                 }
                                 else{
                                     dtotpt.writeUTF("valid");

@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" prefHeight="680.0" prefWidth="682.0" style="-fx-background-color: #299ed0;" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="chatapplicaton.LobbyController">
+<AnchorPane id="AnchorPane" prefHeight="680.0" prefWidth="682.0" style="-fx-background-color: #299ed0;" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="chatapplicaton.LobbyController">
    <children>
       <ImageView fitHeight="126.0" fitWidth="97.0" layoutX="3.0" layoutY="3.0" pickOnBounds="true" preserveRatio="true">
          <image>
@@ -43,5 +43,6 @@
          </image>
       </ImageView>
       <JFXButton layoutX="281.0" layoutY="627.0" onAction="#add" prefHeight="39.0" prefWidth="39.0" text=" " />
+      <AnchorPane fx:id="root" layoutX="272.0" layoutY="-1.0" prefHeight="47.0" prefWidth="337.0" stylesheets="@main.css" />
    </children>
 </AnchorPane>
