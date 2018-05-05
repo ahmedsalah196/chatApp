@@ -40,7 +40,7 @@ public class OngoingChatController implements Initializable {
    chatMessages.add("ME :" + tfUser1.getText());
    lvChatWindow.refresh();
 
-   System.out.println(dtotpt);
+  
    dtotpt.writeUTF(tfUser1.getText());
   } catch (Exception e) {
    e.printStackTrace();

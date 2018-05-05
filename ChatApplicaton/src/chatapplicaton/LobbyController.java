@@ -162,7 +162,7 @@ public class LobbyController implements Initializable {
 
    @Override
    public void handle(MouseEvent event) {
-    System.out.println("clicked on the" + users.getSelectionModel().getSelectedItem());
+   
 
 
 
