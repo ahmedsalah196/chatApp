@@ -116,6 +116,18 @@ public class LoginController implements Initializable {
         String stat=status.getValue().getText();
           String portNo = portnumbertxtbox.getText();
             if(portNo.equals(""))portNo="3002";
+            
+        if(Integer.parseInt(portNo)<1024 || Integer.parseInt(portNo) >49151)
+        {
+        snackbar=new JFXSnackbar(root);
+        snackbar.show("Please Select a Port Number between 1024 and 49151",3000);
+        }
+        else if(Integer.parseInt(portNo)==3001)
+        {
+         snackbar=new JFXSnackbar(root);
+        snackbar.show("Please Use another Port Number other than 3001 as it's usually used for server",3000);
+        }
+        else{
         if(stat==null) stat="Online";
        
         try {
@@ -140,7 +152,7 @@ public class LoginController implements Initializable {
             }catch(Exception e){e.printStackTrace();}
         
 
-
+        }
     }
 
     @FXML
