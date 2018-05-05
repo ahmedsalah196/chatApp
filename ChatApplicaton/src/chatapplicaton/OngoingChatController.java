@@ -19,40 +19,39 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 
 public class OngoingChatController implements Initializable {
-    
 
 
-    @FXML  ListView lvChatWindow;
-    @FXML private TextField tfUser1, tfUser2;
-    @FXML JFXButton sendButton;
-    @FXML Label otheruser;
-    
-    public DataOutputStream dtotpt;
-    ObservableList<String> chatMessages = FXCollections.observableArrayList();//create observablelist for listview
+
+ @FXML ListView lvChatWindow;
+ @FXML private TextField tfUser1, tfUser2;
+ @FXML JFXButton sendButton;
+ @FXML Label otheruser;
+
+ public DataOutputStream dtotpt;
+ ObservableList < String > chatMessages = FXCollections.observableArrayList(); //create observablelist for listview
 
 
-    //Method use to handle button press that submits the 1st user's text to the listview.
-    @FXML
-    public void handleUser1SubmitMessage(ActionEvent event) {
-         
-         try{
-       
-        chatMessages.add("ME :"+ tfUser1.getText());
-        lvChatWindow.refresh();
-        System.out.println("SENDING "+tfUser1.getText());
-        System.out.println(dtotpt);
-        dtotpt.writeUTF(tfUser1.getText());
-         }
-         catch(Exception e){e.printStackTrace();};
-        
-     
-    }
-    @Override
-    public void initialize(URL url, ResourceBundle rb) {
-        // TODO
-        lvChatWindow.setItems(chatMessages);//attach the observablelist to the listview
-        otheruser.setText("Chatting with ");
-    }      
+ //Method use to handle button press that submits the 1st user's text to the listview.
+ @FXML
+ public void handleUser1SubmitMessage(ActionEvent event) {
+
+  try {
+
+   chatMessages.add("ME :" + tfUser1.getText());
+   lvChatWindow.refresh();
+
+   System.out.println(dtotpt);
+   dtotpt.writeUTF(tfUser1.getText());
+  } catch (Exception e) {
+   e.printStackTrace();
+  };
+
+
+ }
+ @Override
+ public void initialize(URL url, ResourceBundle rb) {
+  // TODO
+  lvChatWindow.setItems(chatMessages); //attach the observablelist to the listview
+  otheruser.setText("Chatting with ");
+ }
 }
-    
-

@@ -25,212 +25,203 @@ import java.util.logging.Logger;
 
 public class EchoThread extends Thread {
 
-    protected Socket socket;
+ protected Socket socket;
 
 
-    public EchoThread(Socket clientSocket) {
-        this.socket = clientSocket;
+ public EchoThread(Socket clientSocket) {
+  this.socket = clientSocket;
+ }
+ private void save() {
+  System.out.println("here");
+  Gson gson = new Gson();
+  Type type = new TypeToken < ArrayList < user >> () {}.getType();
+  String json = gson.toJson(ChatServer.allusers, type);
+  try {
+   FileWriter fw = new FileWriter("users.json");
+   fw.write(json);
+   fw.close();
+  } catch (Exception e) {
+   e.getMessage();
+  }
+ }
+ private boolean signin(String[] tokens) {
+  boolean ret = false;
+  for (user u: ChatServer.allusers) {
+   if (u.username.equals(tokens[1]))
+    if (u.password.equals(tokens[2]))
+     ret = true;
+  }
+  for (user u: ChatServer.online) {
+   if (u.username.equals(tokens[1])) {
+    ret = false;
+   }
+  }
+  if (tokens[4].equals(""))
+   tokens[4] = "3002";
+
+  System.out.println("SJSJSJ" + tokens[4]);
+  user u = new user(tokens[1], tokens[2], tokens[3], socket.getInetAddress().getHostAddress(), tokens[4]);
+  System.out.println(socket.getInetAddress().getHostAddress());
+  if (socket.getInetAddress().getHostAddress().equals("127.0.0.1") || socket.getInetAddress().getHostAddress().equals("localhost"))
+   try {
+    u.ip = InetAddress.getLocalHost().toString().substring(InetAddress.getLocalHost().toString().lastIndexOf('/') + 1);
+   } catch (UnknownHostException ex) {
+    Logger.getLogger(EchoThread.class.getName()).log(Level.SEVERE, null, ex);
+   }
+  System.out.println(u.ip);
+  if (ret)
+   ChatServer.online.add(u);
+  return ret;
+ }
+ private boolean signup(String[] tokens) {
+  for (user u: ChatServer.allusers) {
+   if (u.username.equals(tokens[1]))
+    return false;
+  }
+  user u = new user(tokens[1], tokens[2], socket.getInetAddress().getHostAddress());
+  System.out.println(socket.getInetAddress().getHostAddress());
+  ChatServer.allusers.add(u);
+  save();
+  return true;
+ }
+ public void run() {
+
+  DataInputStream dtinpt = null;
+  DataOutputStream dtotpt = null;
+  String msgin = "";
+  try {
+   dtinpt = new DataInputStream(this.socket.getInputStream());
+   dtotpt = new DataOutputStream(this.socket.getOutputStream());
+  } catch (Exception e) {
+   return;
+  }
+  try {
+
+   while (true) {
+    msgin = dtinpt.readUTF();
+
+    String[] tokens = msgin.split(",");
+
+
+    if (tokens[0].equals("signin")) {
+
+
+     if (!signin(tokens)) {
+
+      System.out.println("SENDING INVALID TO CLIENT");
+
+      dtotpt.writeUTF("invalid signin");
+     } else {
+      dtotpt.writeUTF("valid signin");
+
+     }
+    } else if (tokens[0].equals("signup")) {
+
+     if (!signup(tokens)) {
+
+      System.out.println("SENDING INVALID TO CLIENT");
+
+      dtotpt.writeUTF("invalid signup");
+     } else {
+      dtotpt.writeUTF("valid signup");
+     }
+
+    } else if (tokens[0].equals("close")) {
+     for (user u: ChatServer.online)
+      if (tokens[1].equals(u.username)) {
+       System.out.println("Closing" + u.username);
+       ChatServer.online.remove(u);
+       break;
+      }
+     for (chatRoom cr: ChatServer.rooms)
+      cr.remove(tokens[1]);
+    } else if (tokens[0].equals("request statuses")) {
+     String ret = "";
+     for (user u: ChatServer.allusers) {
+      boolean on = false;
+      for (user u2: ChatServer.online)
+       if (u2.username.equals(u.username)) {
+        on = true;
+        u.status = u2.status;
+       }
+      if (!on) {
+       u.status = "offline";
+      }
+      ret += u.username + " - " + u.status + ",";
+
+     }
+     ret = ret.substring(0, ret.length() - 1);
+     System.out.println(ret);
+     dtotpt.writeUTF(ret);
+     ret = "";
+     for (chatRoom cr: ChatServer.rooms) {
+      ret += cr.roomName + ",";
+     }
+     if (ret.length() > 0)
+      ret = ret.substring(0, ret.length() - 1);
+     dtotpt.writeUTF(ret);
+    } else if (tokens[0].equals("Get UserIp")) {
+     for (user u: ChatServer.online) {
+      if (u.username.equals(tokens[1])) {
+       System.out.println(u.username);
+       System.out.println(u.ip);
+       System.out.println(u.portNumber);
+       try {
+        dtotpt.writeUTF(u.ip + "," + u.portNumber);
+       } catch (Exception e) {
+        e.printStackTrace();
+       };
+      }
+     }
+    } else if (tokens[0].equals("room")) {
+     if (tokens[1].equals("create")) {
+      chatRoom cr = new chatRoom(tokens[2], tokens[3]);
+      ChatServer.rooms.add(cr);
+     } else if (tokens[1].equals("add")) {
+      for (chatRoom cr: ChatServer.rooms) {
+       if (Integer.parseInt(tokens[2]) == cr.currentRoomNum) {
+        if (!cr.addToRoom(tokens[3])) {
+         dtotpt.writeUTF("you can't join the room");
+        } else {
+         dtotpt.writeUTF("valid");
+        }
+       }
+
+      }
+     } else if (tokens[1].equals("kick")) {
+      for (chatRoom cr: ChatServer.rooms)
+       if (Integer.parseInt(tokens[2]) == cr.currentRoomNum)
+        cr.kickAclient(tokens[3]);
+     } else if (tokens[1].equals("send")) {
+      for (chatRoom cr: ChatServer.rooms)
+       if (Integer.parseInt(tokens[2]) == cr.currentRoomNum)
+        cr.sendMsgToAll(tokens[3]);
+     } else if (tokens[1].equals("request")) {
+      String ret = "", ret2 = "";
+      for (chatRoom cr: ChatServer.rooms)
+       if (Integer.parseInt(tokens[2]) == cr.currentRoomNum) {
+        for (String m: cr.messages)
+         ret += m + "\n";
+        for (user u: cr.clientsInRoom) {
+         ret2 += u.username + ",";
+        }
+       }
+      dtotpt.writeUTF(ret);
+      if (ret2.length() > 0)
+       ret2 = ret2.substring(0, ret2.length() - 1);
+      dtotpt.writeUTF(ret2);
+     } else if (tokens[1].equals("remove")) {
+      for (chatRoom cr: ChatServer.rooms)
+       if (Integer.parseInt(tokens[2]) == cr.currentRoomNum)
+        cr.remove(tokens[3]);
+     }
+
     }
-     private  void save() {
-        System.out.println("here");
-        Gson gson = new Gson();
-        Type type = new TypeToken < ArrayList < user >> () {}.getType();
-        String json = gson.toJson(ChatServer.allusers, type);
-        try {
-            FileWriter fw = new FileWriter("users.json");
-            fw.write(json);
-            fw.close();
-        } catch (Exception e) {
-            e.getMessage();
-        }
-    }
-    private boolean signin(String[] tokens) {
-        boolean ret = false;
-        for (user u: ChatServer.allusers) {
-            if (u.username.equals(tokens[1]))
-                if (u.password.equals(tokens[2]))
-                    ret = true;
-        }
-        for (user u: ChatServer.online) {
-            if (u.username.equals(tokens[1])) {
-                ret=false;
-            }
-        }
-        if(tokens[4].equals(""))
-            tokens[4]="3002";
-        
-        System.out.println("SJSJSJ" + tokens[4]);
-        user u=new user(tokens[1],tokens[2],tokens[3],socket.getInetAddress().getHostAddress(),tokens[4]);
-        System.out.println(socket.getInetAddress().getHostAddress());
-        if(socket.getInetAddress().getHostAddress().equals("127.0.0.1")||socket.getInetAddress().getHostAddress().equals("localhost"))
-            try {
-                u.ip=InetAddress.getLocalHost().toString().substring(InetAddress.getLocalHost().toString().lastIndexOf('/')+1);
-        } catch (UnknownHostException ex) {
-            Logger.getLogger(EchoThread.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        System.out.println(u.ip);
-        if(ret)
-            ChatServer.online.add(u);
-        return ret;
-    }
-    private boolean signup(String[] tokens) {
-        for (user u: ChatServer.allusers) {
-            if (u.username.equals(tokens[1]))
-                return false;
-        }
-        user u =new user(tokens[1],tokens[2],socket.getInetAddress().getHostAddress());
-        System.out.println(socket.getInetAddress().getHostAddress());
-        ChatServer.allusers.add(u);
-        save();
-        return true;
-    }
-    public void run() {
-
-        DataInputStream dtinpt = null;
-        DataOutputStream dtotpt = null;
-        String msgin = "";
-        try {
-            dtinpt = new DataInputStream(this.socket.getInputStream());
-            dtotpt = new DataOutputStream(this.socket.getOutputStream());
-        } catch (Exception e) {
-            return;
-        }
-        try {
-
-            while (true) {
-                msgin = dtinpt.readUTF();
-
-                String[] tokens = msgin.split(",");
 
 
-                if (tokens[0].equals("signin")) {
-
-
-                    if (!signin(tokens)) {
-
-                        System.out.println("SENDING INVALID TO CLIENT");
-
-                        dtotpt.writeUTF("invalid signin");
-                    } else {
-                        dtotpt.writeUTF("valid signin");
-                        
-                    }
-                } else if (tokens[0].equals("signup")) {
-
-                    if (!signup(tokens)) {
-
-                        System.out.println("SENDING INVALID TO CLIENT");
-
-                        dtotpt.writeUTF("invalid signup");
-                    } else {
-                        dtotpt.writeUTF("valid signup");
-                    }
-
-                }
-                else if(tokens[0].equals("close")){
-                    for(user u:ChatServer.online)
-                        if(tokens[1].equals(u.username))
-                        {
-                            System.out.println("Closing"+u.username);
-                            ChatServer.online.remove(u);
-                            break;
-                        }
-                    for(chatRoom cr: ChatServer.rooms)
-                        cr.remove(tokens[1]);
-                }
-                else if (tokens[0].equals("request statuses")){
-                    String ret="";
-                    for(user u:ChatServer.allusers){
-                        boolean on=false;
-                        for(user u2:ChatServer.online)
-                            if(u2.username.equals(u.username)){
-                                on=true;
-                                u.status=u2.status;
-                            }
-                        if(!on){
-                            u.status="offline";
-                        }                        
-                        ret+=u.username+" - "+u.status+",";
-                        
-                    }
-                    ret = ret.substring(0, ret.length() - 1);
-                    System.out.println(ret);
-                    dtotpt.writeUTF(ret);
-                    ret="";
-                    for(chatRoom cr:ChatServer.rooms){
-                        ret+=cr.roomName+",";
-                    }
-                    if(ret.length()>0)
-                    ret = ret.substring(0, ret.length() - 1);
-                    dtotpt.writeUTF(ret);    
-                }
-                
-                else if (tokens[0].equals("Get UserIp")){
-                   for (user u: ChatServer.online) {
-                         if (u.username.equals(tokens[1]))
-                         {
-                             System.out.println(u.username);
-                             System.out.println(u.ip);
-                             System.out.println(u.portNumber);
-                             try{dtotpt.writeUTF(u.ip+","+u.portNumber);}    catch(Exception e){e.printStackTrace();};
-                         }
-                    }
-                }
-                else if(tokens[0].equals("room")){
-                    if(tokens[1].equals("create")){
-                        chatRoom cr=new chatRoom(tokens[2], tokens[3]);
-                        ChatServer.rooms.add(cr);
-                    }
-                    else if(tokens[1].equals("add")){
-                        for(chatRoom cr:ChatServer.rooms){
-                            if(Integer.parseInt(tokens[2])==cr.currentRoomNum){
-                                if(!cr.addToRoom(tokens[3])){
-                                    dtotpt.writeUTF("you can't join the room");
-                                }
-                                else{
-                                    dtotpt.writeUTF("valid");
-                                }
-                            }
-                                
-                        }
-                    }
-                    else if(tokens[1].equals("kick")){
-                        for(chatRoom cr:ChatServer.rooms)
-                            if(Integer.parseInt(tokens[2])==cr.currentRoomNum)
-                                cr.kickAclient(tokens[3]);
-                    }
-                    else if(tokens[1].equals("send")){
-                        for(chatRoom cr:ChatServer.rooms)
-                            if(Integer.parseInt(tokens[2])==cr.currentRoomNum)
-                                cr.sendMsgToAll(tokens[3]);
-                    }
-                    else if (tokens[1].equals("request")){
-                        String ret="",ret2="";
-                        for(chatRoom cr:ChatServer.rooms)
-                            if(Integer.parseInt(tokens[2])==cr.currentRoomNum){
-                                for(String m:cr.messages)
-                                    ret+=m+"\n";
-                                for(user u:cr.clientsInRoom){
-                                    ret2+=u.username+",";
-                                }
-                            }
-                        dtotpt.writeUTF(ret);
-                        if(ret2.length()>0)
-                            ret2 = ret2.substring(0, ret2.length() - 1);
-                        dtotpt.writeUTF(ret2);
-                    }
-                     else if(tokens[1].equals("remove")){
-                        for(chatRoom cr:ChatServer.rooms)
-                            if(Integer.parseInt(tokens[2])==cr.currentRoomNum)
-                                cr.remove(tokens[3]);
-                     }
-                    
-                }
-
-
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        };
-    }
+   }
+  } catch (Exception e) {
+   e.printStackTrace();
+  };
+ }
 }

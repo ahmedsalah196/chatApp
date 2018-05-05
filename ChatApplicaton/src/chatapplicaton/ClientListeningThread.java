@@ -25,60 +25,61 @@ import javafx.stage.Stage;
  *
  * @author ASUS
  */
-public class ClientListeningThread extends Thread{
-    
+public class ClientListeningThread extends Thread {
 
-   
-     ServerSocket serverSocket = null;
-        Socket socket = null;
-        String portNo;
-        String user2Name;
-        
-         ClientListeningThread(String portNo){
-             this.portNo=portNo;
-        
-    }
-    //public static ArrayList<chatRoom> chatRoomsAvailable;
+
+
+ ServerSocket serverSocket = null;
+ Socket socket = null;
+ String portNo;
+ String user2Name;
+
+ ClientListeningThread(String portNo) {
+   this.portNo = portNo;
+
+  }
+  //public static ArrayList<chatRoom> chatRoomsAvailable;
  public void run() {
-       
-        
-       // chatRoomsAvailable = new ArrayList<chatRoom>();
- 
-        try {
-      
-    
-      
-            serverSocket = new ServerSocket(Integer.parseInt(portNo));
-        } catch (Exception e) {
-            
-            System.out.print("X");
-               e.printStackTrace();
-         
 
-        }
-        while (true) {
-            try {
-                System.out.println("ClientLISTENING");
-                socket = serverSocket.accept();
-              
-                try{
-                DataInputStream dinpt =new DataInputStream(socket.getInputStream());
-                  user2Name = dinpt.readUTF();
-                }catch(Exception e){e.printStackTrace();};
-              
-                
-            } 
-            catch (Exception e) {
-                System.out.println("I/O error: " + e);
-              
-            }
-            
-            new ChatThread(socket,user2Name ).start();
-        }
-        
-    }
-    public static void main(String[] args) {
-        launch(args);
-    }
-    
+
+  // chatRoomsAvailable = new ArrayList<chatRoom>();
+
+  try {
+
+
+
+   serverSocket = new ServerSocket(Integer.parseInt(portNo));
+  } catch (Exception e) {
+
+   System.out.print("X");
+   e.printStackTrace();
+
+
+  }
+  while (true) {
+   try {
+
+    socket = serverSocket.accept();
+
+    try {
+     DataInputStream dinpt = new DataInputStream(socket.getInputStream());
+     user2Name = dinpt.readUTF();
+    } catch (Exception e) {
+     e.printStackTrace();
+    };
+
+
+   } catch (Exception e) {
+    System.out.println("I/O error: " + e);
+
+   }
+
+   new ChatThread(socket, user2Name).start();
+  }
+
+ }
+ public static void main(String[] args) {
+  launch(args);
+ }
+
 }

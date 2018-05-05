@@ -21,18 +21,18 @@ import javafx.stage.Stage;
  */
 public class GroupnameController implements Initializable {
 
-    @FXML
-    private JFXTextField name;
-    LobbyController lc;
-    @Override
-    public void initialize(URL url, ResourceBundle rb) {
-        // TODO
-    }    
-    @FXML
-    void create(ActionEvent e) {
-        lc.newRoom(name.getText());
-        Node  source = (Node)  e.getSource(); 
-        Stage stage1  = (Stage) source.getScene().getWindow();
-        stage1.close();
-    }
+ @FXML
+ private JFXTextField name;
+ LobbyController lc;
+ @Override
+ public void initialize(URL url, ResourceBundle rb) {
+  // TODO
+ }
+ @FXML
+ void create(ActionEvent e) {
+  lc.newRoom(name.getText());
+  Node source = (Node) e.getSource();
+  Stage stage1 = (Stage) source.getScene().getWindow();
+  stage1.close();
+ }
 }

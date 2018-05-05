@@ -6,26 +6,26 @@
 package chatserver;
 
 public class user {
-   String username,password,ip,status,portNumber;
-   boolean adm;
-    public user(String username, String password,String status, String ip, String portNumber) {
-        this.username = username;
-        this.password = password;
-        this.ip=ip;
-        this.status=status;
-        this.portNumber=portNumber;
-        if(password.startsWith("adm"))adm=true;
-        else adm=false;
-    }
+ String username, password, ip, status, portNumber;
+ boolean adm;
+ public user(String username, String password, String status, String ip, String portNumber) {
+  this.username = username;
+  this.password = password;
+  this.ip = ip;
+  this.status = status;
+  this.portNumber = portNumber;
+  if (password.startsWith("adm")) adm = true;
+  else adm = false;
+ }
 
-    public user(String username, String password, String ip) {
-        this.username = username;
-        this.password = password;
-        this.ip = ip;
-        if(password.startsWith("adm"))adm=true;
-        else adm=false;
-        status="Online";
-    }
-    
-    
+ public user(String username, String password, String ip) {
+  this.username = username;
+  this.password = password;
+  this.ip = ip;
+  if (password.startsWith("adm")) adm = true;
+  else adm = false;
+  status = "Online";
+ }
+
+
 }
