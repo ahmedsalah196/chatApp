@@ -157,6 +157,7 @@ public class LobbyController implements Initializable {
   
            //newSelection is the currently selected
            //todo
+     
      users.setOnMouseClicked(new EventHandler<MouseEvent>() {
 
         @Override
@@ -167,8 +168,15 @@ public class LobbyController implements Initializable {
        
       String[] listItem = users.getSelectionModel().getSelectedItem().split("-");
       listItem[0]=  listItem[0].trim();
-      
-    System.out.println("HGAAHAHAHA");
+      listItem[1] = listItem[1].trim();
+     
+      if(listItem[1].equals("offline"))
+      {
+           snackbar=new JFXSnackbar(root);
+           snackbar.show("User is Offline, Please Pick an Online user",3000);
+      }
+      else
+      {
      try{
     dout.writeUTF("Get UserIp,"+listItem[0]);
     System.out.println("ONLY ONCE");
@@ -188,6 +196,7 @@ public class LobbyController implements Initializable {
     
    
     }
+        }
         
     });
         groups.setOnMouseClicked(new EventHandler<MouseEvent>() {
